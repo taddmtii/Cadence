@@ -27,14 +27,14 @@ export class CategoryService {
     });
   }
 
-  async createCategory(data: Prisma.TaskCreateInput): Promise<Category> {
+  async createCategory(data: Prisma.CategoryCreateInput): Promise<Category> {
     return this.prisma.category.create({ data })
   }
 
   async updateCategory(params: {
-    where: Prisma.TaskWhereUniqueInput;
-    data: Prisma.TaskUpdateInput;
-  }): Promise<Task> {
+    where: Prisma.CategoryWhereUniqueInput;
+    data: Prisma.CategoryUpdateInput;
+  }): Promise<Category> {
     const { where, data } = params;
     return this.prisma.category.update({ data, where });
   }
