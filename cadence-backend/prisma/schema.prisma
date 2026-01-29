@@ -10,17 +10,20 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  password  String
+  id          String           @id @default(uuid())
+  email       String           @unique
+  name        String
+  password    String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  tasks       Task[]
+  taskGroups  TaskGroup[]
+  completions TaskCompletion[]
 }
 
 model Category {
   id    String @id @default(uuid())
-  name  String
+  name  String @unique
   tasks Task[]
 }
 
@@ -32,23 +35,47 @@ enum Frequency {
 }
 
 model Task {
-  id            String    @id @default(uuid())
-  name          String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime
-  completedAt   DateTime
-  lastCompleted DateTime
-  archived      Boolean
-  archivedAt    DateTime
-  description   String
-  frequency     Frequency @default(DAILY)
-  category      Category  @relation(fields: [categoryId], references: [id])
-  taskGroup     TaskGroup @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
-  taskGroupId   String
-  categoryId    String
+  id          String           @id @default(uuid())
+  name        String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime?        @updatedAt
+  archived    Boolean          @default(false)
+  archivedAt  DateTime?
+  description String?
+  frequency   Frequency        @default(DAILY)
+  category    Category         @relation(fields: [categoryId], references: [id])
+  taskGroup   TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  taskGroupId String?
+  userId      String
+  completions TaskCompletion[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([userId, archived])
+}
+
+model TaskCompletion {
+  id          String   @id @default(uuid())
+  date        DateTime @db.Date
+  completedAt DateTime @default(now())
+  taskId      String
+  userId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, date]) // cannot mark same task complete twice in one day.
+  @@index([userId, date])
+  @@index([taskId, date])
 }
 
 model TaskGroup {
-  id    String @id @default(uuid())
-  tasks Task[]
+  id     String @id @default(uuid())
+  name   String
+  tasks  Task[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@index([userId])
 }
