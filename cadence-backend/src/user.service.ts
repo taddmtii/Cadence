@@ -4,7 +4,7 @@ import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // Finds singular user based on unique identifier (either an ID or an email)
   async user(

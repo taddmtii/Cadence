@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 
 @Controller()
 export class AppController {
-  constructor(private readonly UserService: UserService) {}
+  constructor(private readonly UserService: UserService) { }
 
   @Post('user')
   async signupUser(
