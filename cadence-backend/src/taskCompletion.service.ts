@@ -6,11 +6,11 @@ import { Prisma, TaskCompletion } from "@prisma/client";
 export class TaskCompletionService {
   constructor(private prisma: PrismaService) { }
 
-  async task(taskCompletionWhereUniqueInput: Prisma.TaskCompletionWhereUniqueInput): Promise<TaskCompletion | null> {
+  async taskCompletion(taskCompletionWhereUniqueInput: Prisma.TaskCompletionWhereUniqueInput): Promise<TaskCompletion | null> {
     return this.prisma.taskCompletion.findUnique({ where: taskCompletionWhereUniqueInput })
   }
 
-  async tasks(params: {
+  async taskCompletions(params: {
     skip?: number; // skip first N users (for pagination)
     take?: number; // limits how many results returned
     cursor?: Prisma.TaskCompletionWhereUniqueInput; // for pagination
@@ -27,11 +27,11 @@ export class TaskCompletionService {
     });
   }
 
-  async createTask(data: Prisma.TaskCompletionCreateInput): Promise<TaskCompletion> {
+  async createTaskCompletions(data: Prisma.TaskCompletionCreateInput): Promise<TaskCompletion> {
     return this.prisma.taskCompletion.create({ data })
   }
 
-  async updateTask(params: {
+  async updateTaskCompletions(params: {
     where: Prisma.TaskCompletionWhereUniqueInput;
     data: Prisma.TaskCompletionUpdateInput;
   }): Promise<TaskCompletion> {
@@ -39,7 +39,7 @@ export class TaskCompletionService {
     return this.prisma.taskCompletion.update({ data, where });
   }
 
-  async deleteTask(where: Prisma.TaskCompletionWhereUniqueInput): Promise<TaskCompletion> {
+  async deleteTaskCompletions(where: Prisma.TaskCompletionWhereUniqueInput): Promise<TaskCompletion> {
     return this.prisma.taskCompletion.delete({ where });
   }
 }
