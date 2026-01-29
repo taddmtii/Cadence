@@ -1,10 +1,18 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from '@prisma/client';
+import { TaskCompletion, TaskGroup, User } from '@prisma/client';
+import { TaskService } from './task.service';
+import { TaskCompletionService } from './taskCompletion.service';
+import { TaskGroupService } from './taskGroup.service';
+import { CategoryService } from './category.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly UserService: UserService) { }
+  constructor(private readonly UserService: UserService,
+    private readonly TaskService: TaskService,
+    private readonly TaskCompletionService: TaskCompletionService,
+    private readonly TaskGroupService: TaskGroupService,
+    private readonly CategoryService: CategoryService) { }
 
   @Post('user')
   async signupUser(
