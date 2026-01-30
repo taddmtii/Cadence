@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { Category, Frequency, Prisma, Task, TaskCompletion } from '@prisma/client';
+import { Frequency, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
 
 @Controller('task')
@@ -15,7 +15,6 @@ export class TaskController {
       categoryId: string,
       taskGroupId: string,
       userId: string,
-      completions: TaskCompletion[]
     },
   ): Promise<Task> {
     return this.TaskService.createTask({
