@@ -27,8 +27,17 @@ export class TaskGroupService {
     });
   }
 
-  async createTaskGroup(data: Prisma.TaskGroupCreateInput): Promise<TaskGroup> {
-    return this.prisma.taskGroup.create({ data })
+  async createTaskGroup(data: { name: string; userId: string }): Promise<TaskGroup> {
+    return this.prisma.taskGroup.create({
+      data: {
+        name: data.name,
+        user: {
+          connect: {
+            id: data.userId
+          }
+        }
+      }
+    })
   }
 
   async updateTaskGroup(params: {

@@ -27,8 +27,23 @@ export class TaskCompletionService {
     });
   }
 
-  async createTaskCompletions(data: Prisma.TaskCompletionCreateInput): Promise<TaskCompletion> {
-    return this.prisma.taskCompletion.create({ data })
+  async createTaskCompletions(data: { date: Date; completedAt: Date; taskId: string; userId: string }): Promise<TaskCompletion> {
+    return this.prisma.taskCompletion.create({
+      data: {
+        date: data.date,
+        completedAt: data.completedAt,
+        task: {
+          connect: {
+            id: data.taskId
+          }
+        },
+        user: {
+          connect: {
+            id: data.userId
+          }
+        }
+      }
+    })
   }
 
   async updateTaskCompletions(params: {
