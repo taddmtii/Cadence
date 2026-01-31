@@ -29,7 +29,7 @@ export class AuthService {
 
     // Generate JWT token containing user ID.
     return {
-      accessToken: this.jwtService.sign({ uesrId: await userId })
+      accessToken: this.jwtService.sign({ userId: await userId })
     }
   }
 

@@ -7,15 +7,15 @@ import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private UserService: UserService, configService: ConfigService) {
+  constructor(private userService: UserService, configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get<string>('JWT_SECRET')!
     });
   }
 
-  async validate(payload: { userId: Prisma.UserWhereUniqueInput }): Promise<User> {
-    const user = await this.UserService.user(payload.userId)
+  async validate(payload: { userId: string }): Promise<User> {
+    const user = await this.userService.user({ id: payload.userId })
 
     if (!user) {
       throw new UnauthorizedException()
