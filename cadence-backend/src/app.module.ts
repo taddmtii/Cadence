@@ -11,10 +11,11 @@ import { TaskGroupService } from './task-group/taskGroup.service';
 import { TaskCompletionService } from './task-completion/taskCompletion.service';
 import { CategoryService } from './category/category.service';
 import { TaskService } from './task/task.service';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController, UserController, TaskController, CategoryController, TaskGroupController, TaskCompletionController],
+  controllers: [AppController, UserController, TaskController, CategoryController, TaskGroupController, TaskCompletionController, AuthController],
   providers: [PrismaService, UserService, TaskGroupService, TaskCompletionService, CategoryService, TaskService],
 })
 export class AppModule { }
