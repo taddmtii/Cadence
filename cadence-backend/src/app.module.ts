@@ -1,21 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PrismaService } from './prisma.service';
-import { UserController } from './user/user.controller';
-import { TaskController } from './task/task.controller';
-import { CategoryController } from './category/category.controller';
-import { TaskGroupController } from './task-group/task-group.controller';
-import { TaskCompletionController } from './task-completion/task-completion.controller';
-import { UserService } from './user/user.service';
-import { TaskGroupService } from './task-group/taskGroup.service';
-import { TaskCompletionService } from './task-completion/taskCompletion.service';
-import { CategoryService } from './category/category.service';
-import { TaskService } from './task/task.service';
-import { AuthController } from './auth/auth.controller';
+import { UserModule } from './user/user.module';
+import { TaskGroupModule } from './task-group/task-group.module';
+import { TaskCompletionModule } from './task-completion/task-completion.module';
+import { TaskModule } from './task/task.module';
+import { CategoryModule } from './category/category.module';
+import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './prisma.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [],
-  controllers: [AppController, UserController, TaskController, CategoryController, TaskGroupController, TaskCompletionController, AuthController],
-  providers: [PrismaService, UserService, TaskGroupService, TaskCompletionService, CategoryService, TaskService],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, UserModule, TaskGroupModule, TaskCompletionModule, TaskModule, CategoryModule, AuthModule],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule { }

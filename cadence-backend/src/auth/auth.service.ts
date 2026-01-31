@@ -1,21 +1,36 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Prisma, User } from "@prisma/client";
-import { PrismaService } from "src/prisma.service";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt';
+import { AuthEntity } from "./entity/auth.entity";
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private UserService: UserService) { }
+  constructor(private UserService: UserService, private jwtService: JwtService) { }
 
   // Gets user by email, checks hashed password against input. Returns true if valid and false if not.
-  // TODO: come back when dealing with sessions.
-  async login(email: Prisma.UserWhereUniqueInput, password: string): Promise<boolean> {
+  async login(email: Prisma.UserWhereUniqueInput, password: string): Promise<AuthEntity> {
     const user: Promise<User | null> = this.UserService.user(email);
+    const userId: Promise<string | undefined> = user.then(res => res?.id)
+    if (!user) {
+      throw new NotFoundException(`No user found for email: ${email}.`)
+    }
+
     const hashed: string | undefined = await user.then(res => res?.password);
-    if (hashed == undefined) { return false }
+    if (hashed == undefined) {
+      throw new UnauthorizedException("Password can not be hashed.")
+    }
+
     const isValid: boolean = await bcrypt.compare(password, hashed).then(res => res.valueOf())
-    return isValid
+    if (!isValid) {
+      throw new UnauthorizedException("Invalid password.")
+    }
+
+    // Generate JWT token containing user ID.
+    return {
+      accessToken: this.jwtService.sign({ uesrId: await userId })
+    }
   }
 
   // TODO: come back when dealing with sessions
