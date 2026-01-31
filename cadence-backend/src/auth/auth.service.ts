@@ -9,7 +9,7 @@ import { AuthEntity } from "./entity/auth.entity";
 export class AuthService {
   constructor(private UserService: UserService, private jwtService: JwtService) { }
 
-  // Gets user by email, checks hashed password against input. Returns true if valid and false if not.
+  // Gets user by email, checks hashed password against input. Returns JWT token if valid.
   async login(email: Prisma.UserWhereUniqueInput, password: string): Promise<AuthEntity> {
     const user: Promise<User | null> = this.UserService.user(email);
     const userId: Promise<string | undefined> = user.then(res => res?.id)
@@ -31,15 +31,6 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign({ userId: await userId })
     }
-  }
-
-  // TODO: come back when dealing with sessions
-  async logout() {
-
-  }
-
-  async register(data: Prisma.UserCreateInput) {
-    return this.UserService.createUser(data)
   }
 
   // hashes new password and updates user with that new password. Returns true if success, and false if not.
