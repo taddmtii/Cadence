@@ -1,4 +1,4 @@
-import { ClipboardCheck, Flame, MoveRight } from "lucide-react";
+import { ChartLine, ClipboardCheck, CloudLightning, Flame, LucideGitGraph, MoveRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +34,7 @@ export default function WelcomePage() {
         {/*Main Content*/}
         <div className="flex flex-col mt-16">
           {/*Hero*/}
-          <section className="flex flex-col border-b border-border py-12 mx-auto mt-10 gap-8 text-center">
+          <section className="flex flex-col border-b border-border py-12 mx-auto mt-10 gap-8 text-center items-center">
             <h1 className="text-6xl max-w-2xl font-bold">Master Your Daily <br /> Routine with <span className="text-[#00f0a0]">Cadence</span></h1>
             <p className="opacity-70 max-w-xl">The accountability platform that helps you build lasting habits through <br /> intelligent tracking, streak mechanics, and powerful analytics. Take control of <br /> your daily rhythm.</p>
             <div className="flex gap-4 justify-center">
@@ -43,21 +43,99 @@ export default function WelcomePage() {
               </Button>
             </div>
           </section>
+
           {/*Features*/}
-          <section className="flex flex-col border-b border-border py-12 mx-auto mt-10 gap-8 text-center">
-            <h1 className="text-4xl max-w-2xl font-bold">Everything you need to suceed</h1>
-            <p className="opacity-70 max-w-xl">Powerful features designed to help you build and maintain your healthy habits.</p>
-            <div className="flex gap-4 ">
-              <Card className="mx-auto w-85 max-w-4xl hover:border-[#00f0a0]">
-                <CardHeader>
-                  <div className="flex flex-col gap-2 text-start">
+          <section className="flex flex-col border-b border-border py-12 mx-auto gap-12 text-center items-center">
+            <div className="flex flex-col gap-4">
+              <h1 className="text-4xl max-w-2xl font-bold">Everything you need to succeed</h1>
+              <p className="opacity-70 max-w-xl">Powerful features designed to help you build and maintain your healthy habits.</p>
+            </div>
+            <div className="flex flex-col gap-4 max-w-5xl lg:flex-row">
+              <Card className="mx-auto w-85 max-w-4xl transition-all duration-200 hover:ring-2 hover:ring-[#00f0a0]">
+                <CardHeader className="">
+                  <div className="flex flex-col pb-0 gap-2 text-start">
                     <ClipboardCheck />
                     <CardTitle>Smart Task Tracking</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-start">
                   <p>
                     Create tasks and task groups, organize them into categories, and track completions with precision.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="mx-auto w-85 max-w-4xl transition-all duration-200 hover:ring-2 hover:ring-[#00f0a0]">
+                <CardHeader>
+                  <div className="flex flex-col pb-0 gap-2 text-start">
+                    <Zap />
+                    <CardTitle>Streak Mechanics</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-start">
+                  <p>
+                    Build momentum with streak tracking. watch your consistency grow as you complete tasks daily.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="mx-auto w-85 max-w-4xl transition-all duration-200 hover:ring-2 hover:ring-[#00f0a0]">
+                <CardHeader>
+                  <div className="flex flex-col pb-0 gap-2 text-start">
+                    <ChartLine />
+                    <CardTitle>Powerful Analytics</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-start">
+                  <p>
+                    Visualize your progress with detailed analytics. See completion rates, trends, and patterns over time.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/*How Cadence Works*/}
+          <section className="flex flex-col border-b border-border py-12 mx-auto gap-12 text-center items-center">
+            <div className="flex flex-col gap-4">
+              <h1 className="text-4xl max-w-2xl font-bold">How Cadence Works</h1>
+              <p className="opacity-70 max-w-xl">Get started in minutes and transform your daily habits.</p>
+            </div>
+            <div className="flex flex-col gap-4 max-w-5xl lg:flex-row">
+              <Card className="mx-auto w-85 max-w-4xl bg-background border-none">
+                <CardHeader>
+                  <div className="flex flex-col pb-0 gap-2 text-start">
+                    <h1 className="text-4xl font-bold text-[#00f0a0]/25">01</h1>
+                    <CardTitle>Define Your Tasks</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-start">
+                  <p>
+                    Create tasks, group them into categories, then set your daily, weekly, or monthly schedules.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="mx-auto w-85 max-w-4xl bg-background border-none">
+                <CardHeader>
+                  <div className="flex flex-col pb-0 gap-2 text-start">
+                    <h1 className="text-4xl font-bold text-[#00f0a0]/25">02</h1>
+                    <CardTitle>Track Daily</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-start">
+                  <p>
+                    Check off tasks as you complete them. Build streaks and watch your consistency improve.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="mx-auto w-85 max-w-4xl bg-background border-none">
+                <CardHeader>
+                  <div className="flex flex-col pb-0 gap-2 text-start">
+                    <h1 className="text-4xl font-bold text-[#00f0a0]/25">03</h1>
+                    <CardTitle>Analyze & improve</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-start">
+                  <p>
+                    Review your analytics to understand patterns and optimize your routine for success.
                   </p>
                 </CardContent>
               </Card>
