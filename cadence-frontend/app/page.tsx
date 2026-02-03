@@ -35,7 +35,7 @@ export default function WelcomePage() {
           {/*Hero*/}
           <section className="flex flex-col border-b border-border py-12 mx-auto mt-10 gap-8 text-center items-center">
             <h1 className="text-6xl max-w-2xl font-bold">Master Your Daily <br /> Routine with <span className="text-[#00f0a0]">Cadence</span></h1>
-            <p className="opacity-70 max-w-xl">The accountability platform that helps you build lasting habits through <br /> intelligent tracking, streak mechanics, and powerful analytics. Take control of <br /> your daily rhythm.</p>
+            <p className="text-muted-foreground max-w-xl">The accountability platform that helps you build lasting habits through <br /> intelligent tracking, streak mechanics, and powerful analytics. Take control of <br /> your daily rhythm.</p>
             <div className="flex gap-4 justify-center">
               <Button className="bg-[#00f0a0] hover:bg-[#00c080] cursor-pointer">
                 <Link className="flex items-center gap-2" href="/signup">Start Organizing <MoveRight /></Link>
@@ -47,7 +47,7 @@ export default function WelcomePage() {
           <section className="flex flex-col border-b border-border py-25 mx-auto gap-12 text-center items-center">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl max-w-2xl font-bold">Everything you need to succeed</h1>
-              <p className="opacity-70 max-w-xl">Powerful features designed to help you build and maintain your healthy habits.</p>
+              <p className="text-muted-foreground max-w-xl">Powerful features designed to help you build and maintain your healthy habits.</p>
             </div>
             <div className="flex flex-col gap-4 max-w-5xl lg:flex-row">
               <Card className="mx-auto w-85 max-w-4xl transition-all duration-200 hover:ring-2 hover:ring-[#00f0a0]">
@@ -93,10 +93,10 @@ export default function WelcomePage() {
           </section>
 
           {/*How Cadence Works*/}
-          <section className="flex flex-col border-b border-border py-25 mx-auto gap-12 text-center items-center">
+          <section className="flex flex-col py-25 mx-auto gap-12 text-center items-center">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl max-w-2xl font-bold">How Cadence Works</h1>
-              <p className="opacity-70 max-w-xl">Get started in minutes and transform your daily habits.</p>
+              <p className="text-muted-foreground max-w-xl">Get started in minutes and transform your daily habits.</p>
             </div>
             <div className="flex flex-col gap-4 max-w-5xl lg:flex-row">
               <Card className="mx-auto w-85 max-w-4xl bg-background border-none">
@@ -140,6 +140,20 @@ export default function WelcomePage() {
               </Card>
             </div>
           </section>
+
+          {/*Signup Banner*/}
+          <section className="flex justify-center items-center border-b border-border">
+            <div className="flex flex-col gap-5 bg-card w-200 h-65 rounded-xl justify-center items-center border-b border-border m-20">
+              <h1 className="lg:text-4xl text-3xl text-center max-w-2xl font-bold">Ready to build better habits?</h1>
+              <p className="text-muted-foreground text-center max-w-xl">Join others who have transformed their daily routine with Cadence.</p>
+              <Button className="bg-[#00f0a0] hover:bg-[#00c080] cursor-pointer">
+                <Link href="/signup">Get Started</Link>
+              </Button>
+            </div>
+          </section>
+
+          {/*Footer*/}
+
         </div>
       </div>
 
