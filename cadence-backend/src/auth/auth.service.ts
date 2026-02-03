@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Prisma, User } from "@prisma/client";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from 'bcrypt'
@@ -31,6 +31,12 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign({ userId: await userId })
     }
+  }
+
+  async signup(firstName: string, lastName: string, email: string, password: string) {
+    const newUser: User = await this.UserService.createUser({ firstName, lastName, email, password })
+    // automatically login user after they sign up.
+    return this.login({ email: newUser.email }, password)
   }
 
   // hashes new password and updates user with that new password. Returns true if success, and false if not.

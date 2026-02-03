@@ -13,7 +13,13 @@ export default function SignupPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  async function handleLogin(e) {
+
+  async function handleSignup(e) {
+    console.log("handleSignup hit...")
+    console.log("First Name: ", firstName)
+    console.log("Last Name: ", lastName)
+    console.log("Email: ", email)
+    console.log("Password: ", password)
     e.preventDefault()
     try {
       await api.post('/auth/signup', {
@@ -40,7 +46,7 @@ export default function SignupPage() {
           <h1 className="text-2xl text-center max-w-2xl font-bold">Create your account</h1>
           <p className="text-muted-foreground">Start building better habits today</p>
 
-          <form className="w-full" onSubmit={handleLogin}>
+          <form className="w-full" onSubmit={handleSignup}>
             <FieldGroup>
               <div className="flex gap-4">
                 <Field>
