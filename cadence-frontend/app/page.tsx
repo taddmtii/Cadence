@@ -153,10 +153,23 @@ export default function WelcomePage() {
           </section>
 
           {/*Footer*/}
-
+          <footer>
+            <div className="flex w-screen mx-auto justify-between h-30 items-center max-w-7xl">
+              <div className="flex gap-2">
+                <div className="flex justify-center items-center rounded-md h-8 w-8 bg-[#00f0a0]">
+                  <Flame className="h-4 w-4" color="black" />
+                </div>
+                <div className="text-xl font-bold">
+                  Cadence
+                </div>
+              </div>
+              <div className="flex">
+                <p className="text-muted-foreground text-sm">Built with Care.</p>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
-
     </>
   );
 }
