@@ -5,7 +5,8 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
 import { Flame } from "lucide-react";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignupPage() {
@@ -13,17 +14,29 @@ export default function SignupPage() {
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-
+  const [emailTaken, setEmailTaken] = useState(false)
+  const [passwordValid, setPasswordValid] = useState(true)
+  const [creating, setCreating] = useState(false)
+  const router = useRouter()
 
   async function handleSignup(e) {
     e.preventDefault()
+    setCreating(true)
     try {
       await api.post('/auth/signup', {
         firstName, lastName, email, password
       });
+      setCreating(false)
+      setPasswordValid(true)
+      router.replace('/dashboard')
     } catch (e) {
-      console.error("Signup failed:", e)
+      setCreating(false)
+      setEmailTaken(true)
     }
+  }
+
+  function validatePassword(password: string) {
+    return (password.length > 8)
   }
 
   return (
@@ -81,17 +94,21 @@ export default function SignupPage() {
                   id="password"
                   type="password"
                   placeholder="Enter your password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setPasswordValid(validatePassword(e.target.value)) }}
                   required
+                  aria-invalid={!passwordValid}
                 />
                 <FieldDescription className="flex">
                   Must be at least 8 characters
                 </FieldDescription>
               </Field>
-
+              {emailTaken && <p className="text-[red]">Email already registered, try signing in instead</p>}
               <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
-                Create Account
+                {creating ? "Creating account..." : "Create Account"}
               </Button>
+              <FieldDescription className="flex gap-1">
+                Already have an account? <Link href={'/login'} className="text-bold">Sign in</Link>
+              </FieldDescription>
             </FieldGroup>
           </form>
         </div>
