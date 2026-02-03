@@ -1,14 +1,13 @@
-import { ChartLine, ClipboardCheck, CloudLightning, Flame, LucideGitGraph, MoveRight, Zap } from "lucide-react";
+import { ChartLine, ClipboardCheck, Flame, MoveRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function WelcomePage() {
   return (
     <>
       <div className="min-h-screen">
-
-        <header className="fixed top-0 left-0 right-0 border-b">
+        <header className="fixed top-0 left-0 right-0 border-b bg-background/90 backdrop-blur">
           <div className="flex w-screen mx-auto justify-between px-6 h-16 items-center max-w-7xl">
             <div className="flex gap-2">
               <Link href="/">
@@ -45,7 +44,7 @@ export default function WelcomePage() {
           </section>
 
           {/*Features*/}
-          <section className="flex flex-col border-b border-border py-12 mx-auto gap-12 text-center items-center">
+          <section className="flex flex-col border-b border-border py-25 mx-auto gap-12 text-center items-center">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl max-w-2xl font-bold">Everything you need to succeed</h1>
               <p className="opacity-70 max-w-xl">Powerful features designed to help you build and maintain your healthy habits.</p>
@@ -94,7 +93,7 @@ export default function WelcomePage() {
           </section>
 
           {/*How Cadence Works*/}
-          <section className="flex flex-col border-b border-border py-12 mx-auto gap-12 text-center items-center">
+          <section className="flex flex-col border-b border-border py-25 mx-auto gap-12 text-center items-center">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl max-w-2xl font-bold">How Cadence Works</h1>
               <p className="opacity-70 max-w-xl">Get started in minutes and transform your daily habits.</p>
