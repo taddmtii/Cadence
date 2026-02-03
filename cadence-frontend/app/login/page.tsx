@@ -5,21 +5,31 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api"
 import { Flame } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [wrongInputs, setWrongInputs] = useState(false)
+  const [signingIn, setSigningIn] = useState(false)
+  const router = useRouter()
 
   async function handleLogin(e) {
     e.preventDefault()
+    setSigningIn(true)
     try {
       await api.post('/auth/login', {
         email, password
       });
       console.log("Login successful!")
+      setWrongInputs(false)
+      setSigningIn(false)
+      router.replace('/dashboard')
+
     } catch (e) {
-      console.error("Login failed:", e)
+      setWrongInputs(true)
+      setSigningIn(false)
     }
   }
 
@@ -60,9 +70,9 @@ export default function LoginPage() {
                   required
                 />
               </Field>
-
+              {wrongInputs && <p className="text-[red]">Email and/or password incorrect.</p>}
               <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
-                Sign In
+                {signingIn ? "Signing in..." : "Sign In"}
               </Button>
             </FieldGroup>
           </form>

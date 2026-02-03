@@ -5,6 +5,7 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
 import { Flame } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function SignupPage() {
@@ -15,17 +16,11 @@ export default function SignupPage() {
 
 
   async function handleSignup(e) {
-    console.log("handleSignup hit...")
-    console.log("First Name: ", firstName)
-    console.log("Last Name: ", lastName)
-    console.log("Email: ", email)
-    console.log("Password: ", password)
     e.preventDefault()
     try {
       await api.post('/auth/signup', {
         firstName, lastName, email, password
       });
-      console.log("Signup successful!")
     } catch (e) {
       console.error("Signup failed:", e)
     }
