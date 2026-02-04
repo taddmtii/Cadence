@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import api from "@/lib/api"
 import { Flame } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
@@ -19,15 +18,23 @@ export default function LoginPage() {
     e.preventDefault()
     setSigningIn(true)
     try {
-      await api.post('/auth/login', {
-        email, password
+      const res = await fetch('http://localhost:3000/auth/login', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
       });
-      console.log("Login successful!")
+      const response = await res.json()
+      localStorage.setItem("accessToken", response.accessToken)
       setWrongInputs(false)
       setSigningIn(false)
       router.replace('/dashboard')
-
     } catch (e) {
+      console.log(e)
       setWrongInputs(true)
       setSigningIn(false)
     }

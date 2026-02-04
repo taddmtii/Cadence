@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import api from "@/lib/api";
 import { Flame } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,9 +22,20 @@ export default function SignupPage() {
     e.preventDefault()
     setCreating(true)
     try {
-      await api.post('/auth/signup', {
-        firstName, lastName, email, password
+      const res = await fetch('http://localhost:3000/auth/signup', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password
+        })
       });
+      const response = await res.json()
+      localStorage.setItem("accessToken", response.accessToken)
       setCreating(false)
       setPasswordValid(true)
       router.replace('/dashboard')
@@ -97,6 +107,7 @@ export default function SignupPage() {
                   onChange={(e) => { setPassword(e.target.value); setPasswordValid(validatePassword(e.target.value)) }}
                   required
                   aria-invalid={!passwordValid}
+                  minLength={8}
                 />
                 <FieldDescription className="flex">
                   Must be at least 8 characters
