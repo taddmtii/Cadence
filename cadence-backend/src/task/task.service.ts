@@ -42,4 +42,37 @@ export class TaskService {
   async deleteTask(where: Prisma.TaskWhereUniqueInput): Promise<Task> {
     return this.prisma.task.delete({ where });
   }
+
+  async getTodaysTasksByUserId(userId: string): Promise<Task[] | null> {
+    const startOfDay = new Date(); // 12:00AM
+    const endOfDay = new Date(); // 11:59PM
+    startOfDay.setHours(0, 0, 0, 0)
+    endOfDay.setHours(23, 59, 59, 999);
+    return this.tasks({
+      where: {
+        userId: userId,
+        createdAt: {
+          gte: startOfDay,
+          lte: endOfDay
+        }
+      }
+    })
+  }
+
+  async getCurrentUserStreakByUserId(userId: string): Promise<number> {
+
+  }
+
+  async getLongestUserStreakByUserId(userId: string): Promise<number> {
+
+  }
+
+  async getWeeklyGoalProgressByUserId(userId: string): Promise<number> {
+
+  }
+
+  async getImprovementMetricByUserId(userId: string): Promise<number> {
+
+  }
+
 }
