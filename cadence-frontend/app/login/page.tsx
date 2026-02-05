@@ -28,6 +28,12 @@ export default function LoginPage() {
           password: password
         })
       });
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Unauthorized")
+        }
+        throw new Error("Login failed")
+      }
       const response = await res.json()
       localStorage.setItem("accessToken", response.accessToken)
       setWrongInputs(false)

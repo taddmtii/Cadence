@@ -34,6 +34,12 @@ export default function SignupPage() {
           password: password
         })
       });
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Unauthorized")
+        }
+        throw new Error("Account Creation failed")
+      }
       const response = await res.json()
       localStorage.setItem("accessToken", response.accessToken)
       setCreating(false)
