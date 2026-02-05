@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // redirect to login page if no token
       if (!token) {
-        router.push('/login')
+        router.push('/')
         return;
       }
 
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function logout() {
     localStorage.removeItem('accessToken')
     setUser(null)
-    router.push('/login')
+    router.push('/')
   }
 
   return (
