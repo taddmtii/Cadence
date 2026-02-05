@@ -40,7 +40,6 @@ export default function LoginPage() {
       setSigningIn(false)
       router.replace('/dashboard')
     } catch (e) {
-      console.log(e)
       setWrongInputs(true)
       setSigningIn(false)
     }

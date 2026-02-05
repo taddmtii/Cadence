@@ -16,6 +16,18 @@ export class UserService {
     });
   }
 
+  // Finds user and returns the user without the password attached.
+  async userWithoutPassword(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+  ): Promise<Omit<User, 'password'> | null> {
+    const user = await this.user(userWhereUniqueInput)
+    if (!user) {
+      return null;
+    }
+    const { password, ...userNoPassword } = user
+    return userNoPassword
+  }
+
   async users(params: {
     skip?: number; // skip first N users (for pagination)
     take?: number; // limits how many results returned
