@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 import { Flame } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignupPage() {
+  const { signup } = useAuth()
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -16,35 +17,14 @@ export default function SignupPage() {
   const [emailTaken, setEmailTaken] = useState(false)
   const [passwordValid, setPasswordValid] = useState(true)
   const [creating, setCreating] = useState(false)
-  const router = useRouter()
 
   async function handleSignup(e) {
     e.preventDefault()
     setCreating(true)
     try {
-      const res = await fetch('http://localhost:3000/auth/signup', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password
-        })
-      });
-      if (!res.ok) {
-        if (res.status === 401) {
-          throw new Error("Unauthorized")
-        }
-        throw new Error("Account Creation failed")
-      }
-      const response = await res.json()
-      localStorage.setItem("accessToken", response.accessToken)
+      await signup(firstName, lastName, email, password)
       setCreating(false)
       setPasswordValid(true)
-      router.replace('/dashboard')
     } catch (e) {
       setCreating(false)
       setEmailTaken(true)

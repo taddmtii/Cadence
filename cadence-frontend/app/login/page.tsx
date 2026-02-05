@@ -3,42 +3,22 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 import { Flame } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react"
 
 export default function LoginPage() {
+  const { login } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [wrongInputs, setWrongInputs] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
-  const router = useRouter()
 
   async function handleLogin(e) {
     e.preventDefault()
     setSigningIn(true)
     try {
-      const res = await fetch('http://localhost:3000/auth/login', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      });
-      if (!res.ok) {
-        if (res.status === 401) {
-          throw new Error("Unauthorized")
-        }
-        throw new Error("Login failed")
-      }
-      const response = await res.json()
-      localStorage.setItem("accessToken", response.accessToken)
-      setWrongInputs(false)
-      setSigningIn(false)
-      router.replace('/dashboard')
+      await login(email, password);
     } catch (e) {
       setWrongInputs(true)
       setSigningIn(false)
