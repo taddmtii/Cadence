@@ -59,20 +59,20 @@ export class TaskService {
     })
   }
 
-  async getCurrentUserStreakByUserId(userId: string): Promise<number> {
+  // async getCurrentUserStreakByUserId(userId: string): Promise<number> {
 
-  }
+  // }
 
-  async getLongestUserStreakByUserId(userId: string): Promise<number> {
+  // async getLongestUserStreakByUserId(userId: string): Promise<number> {
 
-  }
+  // }
 
-  async getWeeklyGoalProgressByUserId(userId: string): Promise<number> {
+  // async getWeeklyGoalProgressByUserId(userId: string): Promise<number> {
 
-  }
+  // }
 
-  async getImprovementMetricByUserId(userId: string): Promise<number> {
+  // async getImprovementMetricByUserId(userId: string): Promise<number> {
 
-  }
+  // }
 
 }
