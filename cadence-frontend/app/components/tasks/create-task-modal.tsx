@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAuth } from "@/contexts/AuthContext";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface TaskToolBarProps {
@@ -9,38 +10,52 @@ interface TaskToolBarProps {
 }
 
 export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
+  const { user } = useAuth()
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")
   const [frequency, setFrequency] = useState("")
   const [category, setCategory] = useState("")
-  const [taskGroup, setTaskGroup] = useState("")
   const [creating, setCreating] = useState(false)
 
   async function handleCreateTask(e) {
-    // TODO: finish implementation.
     e.preventDefault()
     setCreating(true)
+    const categoryRes = await fetch(`http://localhost:3000/category/category-name/${category}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+      },
+    })
+    const data = await categoryRes.json()
+    const categoryId = data.id
+
     try {
-      const res = await fetch('http://localhost:3000/users/', {
+      const res = await fetch('http://localhost:3000/task', {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
         },
         body: JSON.stringify({
-          // TODO: fill in body
+          name: taskName,
+          description: description,
+          frequency: frequency,
+          categoryId: categoryId,
+          userId: user?.id
         })
       });
       if (!res.ok) {
         if (res.status === 401) {
           throw new Error("Unauthorized")
         }
-        throw new Error("Task Creation failed")
+        throw new Error("Task Creation failed, ", e)
       }
-      const response = await res.json()
       setCreating(false)
+      setOpenCreateTask(false)
     } catch (e) {
-      throw new Error(e)
       setCreating(false)
+      setOpenCreateTask(false)
+      throw new Error(e)
     }
 
   }
@@ -48,7 +63,15 @@ export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
   return (<>
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setOpenCreateTask(false)}>
       <div className="bg-accent rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-lg font-bold mb-4">Create Task</h2>
+        <div className="flex justify-between">
+          <h2 className="text-lg font-bold mb-4">Create Task</h2>
+          <Button
+            onClick={() => setOpenCreateTask(false)}
+            className="cursor-pointer"
+          >
+            Close
+          </Button>
+        </div>
         <form className="w-full" onSubmit={handleCreateTask}>
           <FieldGroup>
 
@@ -135,30 +158,11 @@ export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
                 </SelectContent>
               </Select>
             </Field>
-            <Field>
-              <FieldLabel htmlFor="taskGroup">Task Group</FieldLabel>
-              <Select onValueChange={(value) => setTaskGroup(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a Task Group"></SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="DAILY">PLACEHOLDER / CALL Task Group method</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
             <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
               {creating ? "Creating task..." : "Create Task"}
             </Button>
           </FieldGroup>
         </form>
-        <Button
-          onClick={() => setOpenCreateTask(false)}
-          className="cursor-pointer"
-        >
-          Close
-        </Button>
       </div>
     </div>
   </>)

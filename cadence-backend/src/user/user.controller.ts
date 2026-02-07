@@ -8,6 +8,7 @@ export class UserController {
   constructor(private readonly UserService: UserService) { }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async user(
     @Body() data: { name: string; email: string; password: string },
   ): Promise<User> {

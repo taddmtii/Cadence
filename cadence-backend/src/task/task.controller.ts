@@ -1,19 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { Frequency, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('task')
 export class TaskController {
   constructor(private readonly TaskService: TaskService) { }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async task(
     @Body() data: {
       name: string,
       description: string,
       frequency: Frequency,
       categoryId: string,
-      taskGroupId: string,
       userId: string,
     },
   ): Promise<Task> {
@@ -27,24 +28,23 @@ export class TaskController {
       user: {
         connect: { id: data.userId }
       },
-      taskGroup: {
-        connect: { id: data.taskGroupId }
-      }
     }
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getTaskById(@Param('id') id: string): Promise<Task | null> {
     return this.TaskService.task({ id: id });
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllTaskGroups(): Promise<Task[] | null> {
     return this.TaskService.tasks({})
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateTaskGroup(@Param('id') id: string, @Body() data: Prisma.TaskUncheckedUpdateInput): Promise<Task | null> {
     return this.TaskService.updateTask({
@@ -53,6 +53,7 @@ export class TaskController {
     })
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteTaskGroup(@Param('id') id: string): Promise<Task> {
     return this.TaskService.deleteTask({ id })
