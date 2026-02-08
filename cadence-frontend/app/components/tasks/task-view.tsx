@@ -27,6 +27,9 @@ interface Task {
 export function TaskView({ tasks, selectedCategory, categories }: TaskViewProps) {
 
   const categoryMap = new Map(categories?.map((category) => [category.categoryId, category.categoryName]) || [])
+  const categoryColorMap = new Map(
+    categories?.map((category) => [category.categoryId, category.color]) || []
+  );
   const frequencyMap = new Map()
   frequencyMap.set("DAILY", "Daily")
   frequencyMap.set("WEEKLY", "Weekly")
@@ -40,10 +43,13 @@ export function TaskView({ tasks, selectedCategory, categories }: TaskViewProps)
           if (selectedCategory && selectedCategory !== task.categoryId) {
             return null;
           }
-
+          const color = categoryColorMap.get(task.categoryId) || "gray"
           return (
             <Card key={task.id} className="flex" >
-              <CardTitle className="px-3 text-md">{task.name}</CardTitle>
+              <div className="flex items-center px-3">
+                <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: color }}></div>
+                <CardTitle className="px-3 text-md">{task.name}</CardTitle>
+              </div>
               <CardHeader className="px-3 text-muted-foreground">{task.description}</CardHeader>
               <CardContent className="px-3 text-muted-foreground text-xs">
                 <div className="flex gap-2">
