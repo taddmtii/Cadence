@@ -15,11 +15,25 @@ export interface CategoryStats {
   taskCount: number;
 }
 
+interface Task {
+  name: string;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  archived: boolean;
+  archivedAt: Date | null;
+  description: string | null;
+  frequency: string;
+  categoryId: string;
+  taskGroupId: string | null;
+  userId: string;
+}
+
 export default function TasksPage() {
   const { user } = useAuth()
   const [openCreateTask, setOpenCreateTask] = useState(false)
   const [categories, setCategories] = useState<CategoryStats[] | null>()
-  const [tasks, setTasks] = useState(null)
+  const [tasks, setTasks] = useState<Task[] | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -58,7 +72,7 @@ export default function TasksPage() {
         </div>
         <TaskToolbar setOpenCreateTask={setOpenCreateTask} />
         {openCreateTask ? (
-          <CreateTaskModal setOpenCreateTask={setOpenCreateTask} />
+          <CreateTaskModal setOpenCreateTask={setOpenCreateTask} setTasks={setTasks} />
         ) : null}
         {isLoading ? (
           <div className="flex gap-4">

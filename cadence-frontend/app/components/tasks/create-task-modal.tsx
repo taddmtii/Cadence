@@ -6,11 +6,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dispatch, SetStateAction, useState } from "react";
 
-interface TaskToolBarProps {
-  setOpenCreateTask: Dispatch<SetStateAction<boolean>>
+interface Task {
+  name: string;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  archived: boolean;
+  archivedAt: Date | null;
+  description: string | null;
+  frequency: string;
+  categoryId: string;
+  taskGroupId: string | null;
+  userId: string;
 }
 
-export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
+
+interface TaskToolBarProps {
+  setOpenCreateTask: Dispatch<SetStateAction<boolean>>
+  setTasks: Dispatch<SetStateAction<Task[] | null>>
+}
+
+export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProps) {
   const { user } = useAuth()
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")
@@ -51,7 +67,10 @@ export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
         }
         throw new Error("Task Creation failed, ", e)
       }
+      const newTask = await res.json()
       setCreating(false)
+      setTasks(prev => prev ? [...prev, newTask] : [newTask])
+
       setOpenCreateTask(false)
     } catch (e) {
       setCreating(false)
