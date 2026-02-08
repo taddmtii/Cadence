@@ -1,6 +1,7 @@
 'use client'
 
 import { CategoryStats } from "@/app/(app)/tasks/page";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,6 +64,29 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
     }
   }
 
+  async function handleDeleteTask(id: string) {
+    try {
+      const res = await fetch(`http://localhost:3000/task/${id}`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+          id: id,
+        })
+      })
+      if (res.ok) {
+        setTasks(prev => prev ? prev.filter(task => task.id !== id) : prev);
+      }
+
+    }
+    catch (e) {
+      throw new Error("Error in deleting task.")
+    }
+  }
+
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -90,10 +114,27 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
                         <DropdownMenuItem><Pencil />Edit Task</DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => handlePauseTask(task.id, task.archived)}><ToggleLeft />Pause Task</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => handlePauseTask(task.id, task.archived)}><ToggleLeft />{task.archived ? "Activate Task" : "Pause Task"}</DropdownMenuItem>
                       </DropdownMenuGroup>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive"><Trash /> Delete Task</DropdownMenuItem>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}><Trash /> Delete Task</DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Task?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete this task.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={(e) => handleDeleteTask(task.id)}>Continue</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
