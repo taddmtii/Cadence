@@ -2,12 +2,13 @@
 
 import { CreateTaskModal } from "@/app/components/tasks/create-task-modal"
 import { TaskCategories } from "@/app/components/tasks/task-categories"
+import { TaskView } from "@/app/components/tasks/task-view"
 import { TaskToolbar } from "@/app/components/tasks/tasks-toolbar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAuth } from "@/contexts/AuthContext"
 import { useEffect, useState } from "react"
 
-interface CategoryStats {
+export interface CategoryStats {
   categoryId: string;
   categoryName: string;
   taskCount: number;
@@ -17,9 +18,12 @@ export default function TasksPage() {
   const { user } = useAuth()
   const [openCreateTask, setOpenCreateTask] = useState(false)
   const [categories, setCategories] = useState<CategoryStats[] | null>()
+  const [tasks, setTasks] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
+    // Get all category information for badges
     const categoryStats = await fetch(`http://localhost:3000/task/category-stats/${user?.id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -28,12 +32,22 @@ export default function TasksPage() {
     })
     const categoryStatsData = await categoryStats.json()
     setCategories(categoryStatsData)
+
+    // Get all tasks for user for display
+    const tasks = await fetch(`http://localhost:3000/task/allTasksForUser/${user?.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+      },
+    })
+    const tasksData = await tasks.json()
+    setTasks(tasksData)
     setIsLoading(false)
   }
 
   useEffect(() => {
     fetchData()
-  }, [categories])
+  }, [isLoading])
   return (
     <>
       <div className="flex flex-col gap-6 w-full px-10 py-5">
@@ -51,8 +65,8 @@ export default function TasksPage() {
             <Skeleton className="p-4 w-20" />
             <Skeleton className="p-4 w-20" />
           </div>
-        ) : <TaskCategories categories={categories} />}
-
+        ) : <TaskCategories categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
+        <TaskView tasks={tasks} selectedCategory={selectedCategory} categories={categories} />
       </div>
     </>
   )

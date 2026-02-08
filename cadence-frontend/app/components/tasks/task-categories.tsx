@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 
 interface CategoryStats {
   categoryId: string;
@@ -12,11 +12,12 @@ interface CategoryStats {
 
 interface TaskCategoriesProps {
   categories: CategoryStats[] | null | undefined
+  selectedCategory: string | null
+  setSelectedCategory: Dispatch<SetStateAction<string | null>>
 }
 
-export function TaskCategories({ categories }: TaskCategoriesProps) {
+export function TaskCategories({ categories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
   const { user } = useAuth()
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   return (
     <>
