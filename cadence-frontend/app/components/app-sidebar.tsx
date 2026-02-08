@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +17,12 @@ import { useAuth } from "@/contexts/AuthContext"
 import { ChartColumnIncreasing, Flame, LayoutDashboard, ListChecks, LogOut, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { user, logout } = useAuth()
+  const { user, logout, isLoading } = useAuth()
+
 
   const pages = [
     { name: "Dashboard", route: "/dashboard", icon: LayoutDashboard },
@@ -65,38 +68,49 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent >
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <div className="flex gap-2">
-                    <Avatar>
-                      <AvatarImage src={"https://github.com/shadcn.png"} alt="avatar" />
-                      <AvatarFallback>TT</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="font-bold text-xs">
-                        {user?.firstName} {user?.lastName}
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {user?.email}
-                      </span>
+        {isLoading ? (
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          </div>
+        ) : (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton>
+                    <div className="flex gap-2">
+                      <Avatar>
+                        <AvatarImage src={"https://github.com/shadcn.png"} alt="avatar" />
+                        <AvatarFallback>TT</AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-xs">
+                          {user?.firstName} {user?.lastName}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {user?.email}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent side="right" align="start">
-                <DropdownMenuItem className="flex items-center text-destructive" onClick={() => {
-                  logout()
-                }}>
-                  <LogOut className="h-4 w-4" /> <span>Logout</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+                <DropdownMenuContent side="right" align="start">
+                  <DropdownMenuItem className="flex items-center text-destructive" onClick={() => {
+                    logout()
+                  }}>
+                    <LogOut className="h-4 w-4" /> <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+
       </SidebarFooter>
     </Sidebar >
   )

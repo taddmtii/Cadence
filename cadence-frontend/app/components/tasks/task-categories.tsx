@@ -1,6 +1,8 @@
+'use client'
+
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 interface CategoryStats {
   categoryId: string;
@@ -8,28 +10,13 @@ interface CategoryStats {
   taskCount: number;
 }
 
-export function TaskCategories() {
+interface TaskCategoriesProps {
+  categories: CategoryStats[] | null | undefined
+}
+
+export function TaskCategories({ categories }: TaskCategoriesProps) {
   const { user } = useAuth()
-  const [categories, setCategories] = useState<CategoryStats[]>()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
-  async function fetchCategories() {
-
-    const categoryStats = await fetch(`http://localhost:3000/task/category-stats/${user?.id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
-      },
-    })
-    const categoryStatsData = await categoryStats.json()
-    console.log(categoryStatsData)
-    setCategories(categoryStatsData)
-    console.log(categories)
-  }
-
-  useEffect(() => {
-    fetchCategories()
-  }, [categories])
 
   return (
     <>

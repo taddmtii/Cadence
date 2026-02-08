@@ -12,6 +12,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   async function checkAuth() {
@@ -43,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const userData = await res.json()
       setUser(userData)
+      setIsLoading(false)
     } catch (e) {
       console.error('Error when trying to fetch user: ', e)
       localStorage.removeItem('token')
@@ -132,6 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
+      isLoading,
       login,
       isAuthenticated: !!user,
       signup,
