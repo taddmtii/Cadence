@@ -40,13 +40,13 @@ export class TaskController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllTaskGroups(): Promise<Task[] | null> {
+  async getAllTasks(): Promise<Task[] | null> {
     return this.TaskService.tasks({})
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async updateTaskGroup(@Param('id') id: string, @Body() data: Prisma.TaskUncheckedUpdateInput): Promise<Task | null> {
+  async updateTask(@Param('id') id: string, @Body() data: Prisma.TaskUncheckedUpdateInput): Promise<Task | null> {
     return this.TaskService.updateTask({
       where: { id },
       data: data
@@ -55,7 +55,7 @@ export class TaskController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deleteTaskGroup(@Param('id') id: string): Promise<Task> {
+  async deleteTask(@Param('id') id: string): Promise<Task> {
     return this.TaskService.deleteTask({ id })
   }
 }

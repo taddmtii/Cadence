@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dispatch, SetStateAction, useState } from "react";
 
@@ -87,12 +88,12 @@ export function CreateTaskModal({ setOpenCreateTask }: TaskToolBarProps) {
             </Field>
             <Field>
               <FieldLabel htmlFor="description">Description</FieldLabel>
-              <Input
+              <Textarea
                 id="description"
-                type="text"
                 placeholder=""
                 onChange={(e) => setDescription(e.target.value)}
                 required
+                className="h-40 resize-none"
               />
             </Field>
             <Field>

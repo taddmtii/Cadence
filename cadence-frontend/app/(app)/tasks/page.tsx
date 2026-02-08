@@ -1,6 +1,7 @@
 'use client'
 
 import { CreateTaskModal } from "@/app/components/tasks/create-task-modal"
+import { TaskCategories } from "@/app/components/tasks/task-categories"
 import { TaskToolbar } from "@/app/components/tasks/tasks-toolbar"
 import { useAuth } from "@/contexts/AuthContext"
 import { useState } from "react"
@@ -18,6 +19,7 @@ export default function TasksPage() {
         {openCreateTask ? (
           <CreateTaskModal setOpenCreateTask={setOpenCreateTask} />
         ) : null}
+        <TaskCategories />
       </div>
     </>
   )
