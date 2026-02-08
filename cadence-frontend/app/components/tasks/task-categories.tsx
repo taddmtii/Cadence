@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 interface CategoryStats {
   categoryId: string;
   categoryName: string;
+  color: string;
   taskCount: number;
 }
 
@@ -18,7 +19,6 @@ interface TaskCategoriesProps {
 
 export function TaskCategories({ categories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
   const { user } = useAuth()
-
   return (
     <>
       <div className="flex gap-2">
@@ -30,20 +30,25 @@ export function TaskCategories({ categories, selectedCategory, setSelectedCatego
         </Badge>
         {categories?.map((category) => {
           const isActive = selectedCategory === category.categoryId
+          const color = category.color
           return (
-            <Badge
-              variant={"secondary"}
-              key={category.categoryId}
-              onClick={() => setSelectedCategory(category.categoryId)}
-              className={`p-2 cursor-pointer ${isActive ? 'text-primary ring-1 ring-[#00f0a0]' : 'text-muted-foreground hover:text-primary hover:ring-1 hover:ring-[#00f0a0]'} `}>
-              <div className="flex gap-4">
-                <h1>{category.categoryName}</h1>
-                <p>{category.taskCount}</p>
-              </div>
-            </Badge>
+            <div key={category.categoryId}>
+              <Badge
+                variant={"secondary"}
+                key={category.categoryId}
+                onClick={() => setSelectedCategory(category.categoryId)}
+                className={`p-2 cursor-pointer ${isActive ? 'text-primary ring-1 ring-[#00f0a0]' : 'text-muted-foreground hover:text-primary hover:ring-1 hover:ring-[#00f0a0]'} `}>
+                <div className="flex items-center text-center gap-2">
+                  <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: color }}></div>
+                  <h1>{category.categoryName}</h1>
+                  <p>{category.taskCount}</p>
+                </div>
+              </Badge>
+            </div >
+
           );
         })}
-      </div>
+      </div >
     </>
   )
 }

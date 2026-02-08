@@ -5,6 +5,7 @@ import { Category, Prisma, Task } from "@prisma/client";
 export interface CategoryStats {
   categoryId: string;
   categoryName: string;
+  color: string;
   taskCount: number;
 }
 
@@ -86,6 +87,7 @@ export class TaskService {
         frequencies[categoryId] = {
           categoryId: categoryId,
           categoryName: task.category.name,
+          color: task.category.color,
           taskCount: 1
         }
       }

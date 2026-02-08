@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 export interface CategoryStats {
   categoryId: string;
   categoryName: string;
+  color: string;
   taskCount: number;
 }
 
