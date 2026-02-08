@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { Frequency, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -43,6 +43,19 @@ export class TaskController {
   async getAllTasks(): Promise<Task[] | null> {
     return this.TaskService.tasks({})
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('allTasksForUser/:id')
+  async getAllTasksForUser(@Param('id') id: string): Promise<Task[] | null> {
+    return this.TaskService.tasks({ where: { userId: id } })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('category-stats/:id')
+  async getCategoryStats(@Param('id') id: string) {
+    return this.TaskService.getCategoryStatsForUser(id)
+  }
+
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')

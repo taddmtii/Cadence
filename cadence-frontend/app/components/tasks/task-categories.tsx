@@ -1,28 +1,60 @@
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+interface CategoryStats {
+  categoryId: string;
+  categoryName: string;
+  taskCount: number;
+}
 
 export function TaskCategories() {
   const { user } = useAuth()
-  const [categories, setCategories] = useState<Map<string, number>>()
+  const [categories, setCategories] = useState<CategoryStats[]>()
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
-  async function fetchCategories(e) {
-    // 1. check all of the logged in users tasks, get categories from them.
-    // 2. as we continue looking through the tasks, add category we have not seen before in the array and increment count.
-    e.preventDefault()
+  async function fetchCategories() {
+
+    const categoryStats = await fetch(`http://localhost:3000/task/category-stats/${user?.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+      },
+    })
+    const categoryStatsData = await categoryStats.json()
+    console.log(categoryStatsData)
+    setCategories(categoryStatsData)
+    console.log(categories)
   }
+
+  useEffect(() => {
+    fetchCategories()
+  }, [categories])
 
   return (
     <>
-      <div className="flex">
-        {/*{for (let [key, value] of  categories.entries()) {
+      <div className="flex gap-2">
+        <Badge
+          variant={"secondary"}
+          onClick={() => setSelectedCategory(null)}
+          className={`p-2 cursor-pointer ${selectedCategory === null ? 'text-primary ring-1 ring-[#00f0a0]' : 'text-muted-foreground hover:text-primary hover:ring-1 hover:ring-[#00f0a0]'} `}>
+          All Tasks
+        </Badge>
+        {categories?.map((category) => {
+          const isActive = selectedCategory === category.categoryId
           return (
-        <Button key={category} variant={"outline"}>
-          {category}
-        </Button>
-        )
-        })}*/}
-
+            <Badge
+              variant={"secondary"}
+              key={category.categoryId}
+              onClick={() => setSelectedCategory(category.categoryId)}
+              className={`p-2 cursor-pointer ${isActive ? 'text-primary ring-1 ring-[#00f0a0]' : 'text-muted-foreground hover:text-primary hover:ring-1 hover:ring-[#00f0a0]'} `}>
+              <div className="flex gap-4">
+                <h1>{category.categoryName}</h1>
+                <p>{category.taskCount}</p>
+              </div>
+            </Badge>
+          );
+        })}
       </div>
     </>
   )
