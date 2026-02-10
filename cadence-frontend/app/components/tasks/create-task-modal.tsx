@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface Task {
   name: string;
@@ -33,6 +33,7 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
   const [frequency, setFrequency] = useState("")
   const [category, setCategory] = useState("")
   const [creating, setCreating] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   async function handleCreateTask(e) {
     e.preventDefault()
@@ -74,19 +75,37 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
       setOpenCreateTask(false)
     } catch (e) {
       setCreating(false)
-      setOpenCreateTask(false)
+      handleClose()
       throw new Error(e)
     }
+  }
 
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setIsVisible(true)
+    })
+  }, [])
+
+  function handleClose() {
+    setIsVisible(false)
+    setTimeout(() => setOpenCreateTask(false), 200)
   }
 
   return (<>
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setOpenCreateTask(false)}>
-      <div className="bg-accent rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      onClick={handleClose}
+    >
+      <div
+        className={`bg-accent rounded-lg p-6 w-full max-w-md transition-all duration-200 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between">
           <h2 className="text-lg font-bold mb-4">Create Task</h2>
           <Button
-            onClick={() => setOpenCreateTask(false)}
+            onClick={() => handleClose()}
             className="cursor-pointer"
           >
             Close
