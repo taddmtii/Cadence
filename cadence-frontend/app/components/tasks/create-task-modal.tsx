@@ -33,6 +33,7 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
   const [frequency, setFrequency] = useState("")
   const [category, setCategory] = useState("")
   const [creating, setCreating] = useState(false)
+  const [priority, setPriority] = useState("")
   const [isVisible, setIsVisible] = useState(false)
 
   async function handleCreateTask(e) {
@@ -59,6 +60,7 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
           description: description,
           frequency: frequency,
           categoryId: categoryId,
+          priority: priority,
           userId: user?.id
         })
       });
@@ -133,6 +135,22 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
                 required
                 className="h-40 resize-none"
               />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="priority">Priority</FieldLabel>
+              <Select onValueChange={(value) => setPriority(value)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a priority"></SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Urgent">Urgent</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </Field>
             <Field>
               <FieldLabel htmlFor="frequency">Frequency</FieldLabel>

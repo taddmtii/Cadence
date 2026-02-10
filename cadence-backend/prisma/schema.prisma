@@ -36,6 +36,13 @@ enum Frequency {
   MONTHLY
 }
 
+enum Priority {
+  Low
+  Medium
+  High
+  Urgent
+}
+
 model Task {
   id          String           @id @default(uuid())
   name        String
@@ -44,6 +51,7 @@ model Task {
   archived    Boolean          @default(false)
   archivedAt  DateTime?
   description String?
+  priority    Priority?        @default(Low)
   frequency   Frequency        @default(DAILY)
   category    Category         @relation(fields: [categoryId], references: [id])
   taskGroup   TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)

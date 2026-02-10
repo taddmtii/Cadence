@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import { Frequency, Prisma, Task } from '@prisma/client';
+import { Frequency, Priority, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -15,6 +15,7 @@ export class TaskController {
       description: string,
       frequency: Frequency,
       categoryId: string,
+      priority: Priority,
       userId: string,
     },
   ): Promise<Task> {
@@ -25,6 +26,7 @@ export class TaskController {
       category: {
         connect: { id: data.categoryId }
       },
+      priority: data.priority,
       user: {
         connect: { id: data.userId }
       },
