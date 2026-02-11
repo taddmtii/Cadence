@@ -6,6 +6,7 @@ import { TaskView } from "@/app/components/tasks/task-view"
 import { TaskToolbar } from "@/app/components/tasks/tasks-toolbar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAuth } from "@/contexts/AuthContext"
+import { Task } from "@/types/Task"
 import { useEffect, useState } from "react"
 
 export interface CategoryStats {
@@ -13,20 +14,6 @@ export interface CategoryStats {
   categoryName: string;
   color: string;
   taskCount: number;
-}
-
-interface Task {
-  name: string;
-  id: string;
-  createdAt: Date;
-  updatedAt: Date | null;
-  archived: boolean;
-  archivedAt: Date | null;
-  description: string | null;
-  frequency: string;
-  categoryId: string;
-  taskGroupId: string | null;
-  userId: string;
 }
 
 export default function TasksPage() {

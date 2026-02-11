@@ -4,22 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
+import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-
-interface Task {
-  name: string;
-  id: string;
-  createdAt: Date;
-  updatedAt: Date | null;
-  archived: boolean;
-  archivedAt: Date | null;
-  description: string | null;
-  frequency: string;
-  categoryId: string;
-  taskGroupId: string | null;
-  userId: string;
-}
-
 
 interface TaskToolBarProps {
   setOpenCreateTask: Dispatch<SetStateAction<boolean>>
@@ -35,6 +21,23 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
   const [creating, setCreating] = useState(false)
   const [priority, setPriority] = useState("")
   const [isVisible, setIsVisible] = useState(false)
+  const [allCategories, setAllCategories] = useState([])
+
+  async function fetchAllCategories() {
+    try {
+      const res = await fetch(`http://localhost:3000/category/`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+        },
+      })
+      const data = await res.json()
+      setAllCategories(data)
+    } catch (e) {
+      handleClose()
+      throw new Error(e)
+    }
+  }
 
   async function handleCreateTask(e) {
     e.preventDefault()
@@ -45,6 +48,14 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
         "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
       },
     })
+
+    if (!categoryRes.ok) {
+      if (categoryRes.status === 401) {
+        throw new Error("Unauthorized")
+      }
+      throw new Error("Could not retrieve categories")
+    }
+
     const data = await categoryRes.json()
     const categoryId = data.id
 
@@ -86,6 +97,7 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
     requestAnimationFrame(() => {
       setIsVisible(true)
     })
+    fetchAllCategories()
   }, [])
 
   function handleClose() {
@@ -160,10 +172,10 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="DAILY">Daily</SelectItem>
-                    <SelectItem value="WEEKLY">Weekly</SelectItem>
-                    <SelectItem value="BIWEEKLY">Biweekly</SelectItem>
-                    <SelectItem value="MONTHLY">Monthly</SelectItem>
+                    <SelectItem value="Daily">Daily</SelectItem>
+                    <SelectItem value="Weekly">Weekly</SelectItem>
+                    <SelectItem value="Biweekly">Biweekly</SelectItem>
+                    <SelectItem value="Monthly">Monthly</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -176,42 +188,12 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Personal Development</SelectLabel>
-                    <SelectItem value="Fitness">Fitness</SelectItem>
-                    <SelectItem value="Nutrition">Nutrition</SelectItem>
-                    <SelectItem value="Health">Health</SelectItem>
-                    <SelectItem value="Sleep">Sleep</SelectItem>
-                    <SelectItem value="Learning">Learning</SelectItem>
-                    <SelectItem value="Reading">Reading</SelectItem>
-                    <SelectItem value="Hobbies">Hobbies</SelectItem>
+                    {allCategories.map((category) => {
+                      return (
+                        <SelectItem value={category.name} key={category.name}>{category.name}</SelectItem>
+                      )
+                    })}
                   </SelectGroup>
-                  <SelectGroup>
-                    <SelectLabel>Professional</SelectLabel>
-                    <SelectItem value="Work">Work</SelectItem>
-                    <SelectItem value="Career">Career</SelectItem>
-                    <SelectItem value="Projects">Projects</SelectItem>
-                    <SelectItem value="Networking">Networking</SelectItem>
-                  </SelectGroup>
-                  <SelectGroup>
-                    <SelectLabel>Financial</SelectLabel>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Savings">Savings</SelectItem>
-                    <SelectItem value="Budgets">Budgets</SelectItem>
-                  </SelectGroup>
-                  <SelectGroup>
-                    <SelectLabel>Social</SelectLabel>
-                    <SelectItem value="Social">Social</SelectItem>
-                    <SelectItem value="Family">Family</SelectItem>
-                    <SelectItem value="Relationships">Relationships</SelectItem>
-                  </SelectGroup>
-                  <SelectGroup>
-                    <SelectLabel>Practical</SelectLabel>
-                    <SelectItem value="Home">Home</SelectItem>
-                    <SelectItem value="Errands">Errands</SelectItem>
-                    <SelectItem value="Habits">Habits</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectGroup>
-
                 </SelectContent>
               </Select>
             </Field>
@@ -221,6 +203,6 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProp
           </FieldGroup>
         </form>
       </div>
-    </div>
+    </div >
   </>)
 }

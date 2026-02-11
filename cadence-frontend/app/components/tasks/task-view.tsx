@@ -5,8 +5,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
+import { Task } from "@/types/Task";
 import { Ellipsis, Pencil, ToggleLeft, Trash } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
@@ -17,31 +18,12 @@ interface TaskViewProps {
   categories: CategoryStats[] | null | undefined
 }
 
-interface Task {
-  name: string;
-  id: string;
-  createdAt: Date;
-  updatedAt: Date | null;
-  archived: boolean;
-  archivedAt: Date | null;
-  description: string | null;
-  frequency: string;
-  categoryId: string;
-  taskGroupId: string | null;
-  userId: string;
-}
-
 export function TaskView({ tasks, setTasks, selectedCategory, categories }: TaskViewProps) {
 
   const categoryMap = new Map(categories?.map((category) => [category.categoryId, category.categoryName]) || [])
   const categoryColorMap = new Map(
     categories?.map((category) => [category.categoryId, category.color]) || []
   );
-  const frequencyMap = new Map()
-  frequencyMap.set("DAILY", "Daily")
-  frequencyMap.set("WEEKLY", "Weekly")
-  frequencyMap.set("BIWEEKLY", "Biweekly")
-  frequencyMap.set("MONTHLY", "Monthly")
 
   async function handlePauseTask(id: string, archived: boolean) {
     try {
@@ -142,7 +124,7 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
               <CardHeader className="px-3 text-muted-foreground">{task.description}</CardHeader>
               <CardContent className="px-3 text-muted-foreground text-xs">
                 <div className="flex gap-2">
-                  <Badge variant="outline">{frequencyMap.get(task.frequency)}</Badge>
+                  <Badge variant="outline">{task.frequency}</Badge>
                   <Badge variant="outline">{categoryMap.get(task.categoryId)}</Badge>
                 </div>
               </CardContent>

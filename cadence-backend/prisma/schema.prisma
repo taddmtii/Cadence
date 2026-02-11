@@ -30,10 +30,10 @@ model Category {
 }
 
 enum Frequency {
-  DAILY
-  WEEKLY
-  BIWEEKLY
-  MONTHLY
+  Daily
+  Weekly
+  Biweekly
+  Monthly
 }
 
 enum Priority {
@@ -52,7 +52,7 @@ model Task {
   archivedAt  DateTime?
   description String?
   priority    Priority?        @default(Low)
-  frequency   Frequency        @default(DAILY)
+  frequency   Frequency        @default(Daily)
   category    Category         @relation(fields: [categoryId], references: [id])
   taskGroup   TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
