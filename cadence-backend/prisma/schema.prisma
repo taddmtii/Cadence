@@ -20,13 +20,16 @@ model User {
   tasks       Task[]
   taskGroups  TaskGroup[]
   completions TaskCompletion[]
+  categories  Category[]
 }
 
 model Category {
-  id    String @id @default(uuid())
-  name  String @unique
-  color String @default("gray")
-  tasks Task[]
+  id     String  @id @default(uuid())
+  name   String  @unique
+  userId String?
+  color  String  @default("gray")
+  tasks  Task[]
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Frequency {

@@ -51,7 +51,7 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchData()
-  }, [isLoading])
+  }, [isLoading, categories])
   return (
     <>
       <div className="flex flex-col gap-6 w-full px-10 py-5">

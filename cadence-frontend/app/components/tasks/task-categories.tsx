@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 interface CategoryStats {
   categoryId: string;
@@ -19,6 +19,7 @@ interface TaskCategoriesProps {
 
 export function TaskCategories({ categories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
   const { user } = useAuth()
+
   return (
     <>
       <div className="flex gap-2">

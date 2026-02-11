@@ -3,7 +3,6 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ColorResult, SketchPicker } from 'react-color'
 import { useAuth } from "@/contexts/AuthContext";
-import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CategoryStats } from "@/app/(app)/tasks/page";
 
@@ -32,7 +31,8 @@ export function CreateCategoryModal({ setOpenCreateCategory, setCategories }: Cr
       },
       body: JSON.stringify({
         name: categoryName,
-        color: color
+        color: color,
+        userId: user?.id
       })
     })
 
