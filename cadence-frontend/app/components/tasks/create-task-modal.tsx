@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-interface TaskToolBarProps {
+interface CreateTaskModalProps {
   setOpenCreateTask: Dispatch<SetStateAction<boolean>>
   setTasks: Dispatch<SetStateAction<Task[] | null>>
 }
 
-export function CreateTaskModal({ setOpenCreateTask, setTasks }: TaskToolBarProps) {
+export function CreateTaskModal({ setOpenCreateTask, setTasks }: CreateTaskModalProps) {
   const { user } = useAuth()
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")

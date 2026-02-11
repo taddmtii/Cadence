@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateCategoryModal } from "@/app/components/tasks/create-category-modal"
 import { CreateTaskModal } from "@/app/components/tasks/create-task-modal"
 import { TaskCategories } from "@/app/components/tasks/task-categories"
 import { TaskView } from "@/app/components/tasks/task-view"
@@ -19,6 +20,7 @@ export interface CategoryStats {
 export default function TasksPage() {
   const { user } = useAuth()
   const [openCreateTask, setOpenCreateTask] = useState(false)
+  const [openCreateCategory, setOpenCreateCategory] = useState(false)
   const [categories, setCategories] = useState<CategoryStats[] | null>()
   const [tasks, setTasks] = useState<Task[] | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -57,9 +59,12 @@ export default function TasksPage() {
           <h1 className="font-bold">Tasks</h1>
           <span className="text-muted-foreground">Manage your habits and recurring tasks</span>
         </div>
-        <TaskToolbar setOpenCreateTask={setOpenCreateTask} />
+        <TaskToolbar setOpenCreateTask={setOpenCreateTask} setOpenCreateCategory={setOpenCreateCategory} />
         {openCreateTask ? (
           <CreateTaskModal setOpenCreateTask={setOpenCreateTask} setTasks={setTasks} />
+        ) : null}
+        {openCreateCategory ? (
+          <CreateCategoryModal setOpenCreateCategory={setOpenCreateCategory} setCategories={setCategories} />
         ) : null}
         {isLoading ? (
           <div className="flex gap-4">

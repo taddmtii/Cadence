@@ -12,10 +12,12 @@ export class CategoryController {
   async category(
     @Body() data: {
       name: string,
+      color: string
     },
   ): Promise<Category> {
     return this.CategoryService.createCategory({
       name: data.name,
+      color: data.color
     }
     );
   }
