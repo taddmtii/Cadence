@@ -1,12 +1,12 @@
 'use client'
 
-import { CategoryStats } from "@/app/(app)/tasks/page";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
+import { Category } from "@/types/Category";
 import { Task } from "@/types/Task";
 import { Ellipsis, Pencil, ToggleLeft, Trash } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
@@ -15,14 +15,14 @@ interface TaskViewProps {
   tasks: Task[] | null
   setTasks: Dispatch<SetStateAction<Task[] | null>>
   selectedCategory: string | null
-  categories: CategoryStats[] | null | undefined
+  categories: Category[] | null | undefined
 }
 
 export function TaskView({ tasks, setTasks, selectedCategory, categories }: TaskViewProps) {
 
-  const categoryMap = new Map(categories?.map((category) => [category.categoryId, category.categoryName]) || [])
+  const categoryMap = new Map(categories?.map((category) => [category.id, category.name]) || [])
   const categoryColorMap = new Map(
-    categories?.map((category) => [category.categoryId, category.color]) || []
+    categories?.map((category) => [category.id, category.color]) || []
   );
 
   async function handlePauseTask(id: string, archived: boolean) {
@@ -112,11 +112,10 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={(e) => handleDeleteTask(task.id)}>Continue</AlertDialogAction>
+                            <AlertDialogAction onClick={() => handleDeleteTask(task.id)}>Continue</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
-
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

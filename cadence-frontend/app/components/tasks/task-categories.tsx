@@ -33,7 +33,7 @@ export function TaskCategories({ categories, selectedCategory, setSelectedCatego
                 <div className="flex items-center text-center gap-2">
                   <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: color }}></div>
                   <h1>{category.name}</h1>
-                  <p>{category._count.tasks}</p>
+                  <p>{category._count?.tasks ?? 0}</p>
                 </div>
               </Badge>
             </div >

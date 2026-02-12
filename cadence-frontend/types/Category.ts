@@ -3,5 +3,7 @@ export type Category = {
   name: string;
   userId: string | null;
   color: string;
-  _count: number
+  _count?: {
+    tasks: number
+  }
 }

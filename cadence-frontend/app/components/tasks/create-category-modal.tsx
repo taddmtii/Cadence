@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { ColorResult, SketchPicker } from 'react-color'
 import { useAuth } from "@/contexts/AuthContext";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { CategoryStats } from "@/app/(app)/tasks/page";
+import { Category } from "@/types/Category";
 
 interface CreateCategoryModalProps {
   setOpenCreateCategory: Dispatch<SetStateAction<boolean>>
-  setCategories: Dispatch<SetStateAction<CategoryStats[] | null | undefined>>
+  setCategories: Dispatch<SetStateAction<Category[] | null | undefined>>
 }
 
 export function CreateCategoryModal({ setOpenCreateCategory, setCategories }: CreateCategoryModalProps) {
@@ -44,16 +44,7 @@ export function CreateCategoryModal({ setOpenCreateCategory, setCategories }: Cr
     }
     const newCategory = await categoryRes.json()
     setCreating(false)
-
-    // category -> categoryStats format we need.
-    const newCategoryStats: CategoryStats = {
-      categoryId: newCategory.id,
-      categoryName: newCategory.name,
-      color: newCategory.color,
-      taskCount: 0
-    }
-
-    setCategories(prev => prev ? [...prev, newCategoryStats] : [newCategoryStats])
+    setCategories(prev => prev ? [...prev, newCategory] : [newCategory])
     handleClose()
   }
 
