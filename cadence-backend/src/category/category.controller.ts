@@ -27,9 +27,9 @@ export class CategoryController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  async getAllCategorys(): Promise<Category[] | null> {
-    return this.CategoryService.categorys({})
+  @Get('getCategoriesByUser/:id')
+  async getCategoriesByUser(@Param('id') userId: string): Promise<Category[] | null> {
+    return this.CategoryService.findAllByUser(userId)
   }
 
   @UseGuards(JwtAuthGuard)

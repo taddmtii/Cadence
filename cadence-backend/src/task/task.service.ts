@@ -66,35 +66,6 @@ export class TaskService {
     })
   }
 
-  async getCategoryStatsForUser(userId: string): Promise<CategoryStats[]> {
-    const tasks = await this.prisma.task.findMany({
-      where: {
-        userId: userId
-      },
-      include: {
-        // gives us the entire category object instead of just the ID.
-        category: true
-      }
-    })
-    const frequencies: Record<string, CategoryStats> = {}
-
-    tasks.map((task) => {
-      const categoryId = task.categoryId
-      if (frequencies[categoryId]) {
-        frequencies[categoryId].taskCount += 1
-      }
-      else {
-        frequencies[categoryId] = {
-          categoryId: categoryId,
-          categoryName: task.category.name,
-          color: task.category.color,
-          taskCount: 1
-        }
-      }
-    })
-    return Object.values(frequencies)
-  }
-
   // async getCurrentUserStreakByUserId(userId: string): Promise<number> {
 
   // }

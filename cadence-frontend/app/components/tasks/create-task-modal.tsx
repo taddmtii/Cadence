@@ -4,15 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
+import { Category } from "@/types/Category";
 import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface CreateTaskModalProps {
+  categories: Category[] | null | undefined
   setOpenCreateTask: Dispatch<SetStateAction<boolean>>
   setTasks: Dispatch<SetStateAction<Task[] | null>>
 }
 
-export function CreateTaskModal({ setOpenCreateTask, setTasks }: CreateTaskModalProps) {
+export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: CreateTaskModalProps) {
   const { user } = useAuth()
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")
@@ -21,23 +23,6 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: CreateTaskModal
   const [creating, setCreating] = useState(false)
   const [priority, setPriority] = useState("")
   const [isVisible, setIsVisible] = useState(false)
-  const [allCategories, setAllCategories] = useState([])
-
-  async function fetchAllCategories() {
-    try {
-      const res = await fetch(`http://localhost:3000/category/`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
-        },
-      })
-      const data = await res.json()
-      setAllCategories(data)
-    } catch (e) {
-      handleClose()
-      throw new Error(e)
-    }
-  }
 
   async function handleCreateTask(e) {
     e.preventDefault()
@@ -97,7 +82,6 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: CreateTaskModal
     requestAnimationFrame(() => {
       setIsVisible(true)
     })
-    fetchAllCategories()
   }, [])
 
   function handleClose() {
@@ -188,9 +172,9 @@ export function CreateTaskModal({ setOpenCreateTask, setTasks }: CreateTaskModal
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {allCategories.map((category) => {
+                    {categories?.map((category) => {
                       return (
-                        <SelectItem value={category.name} key={category.name}>{category.name}</SelectItem>
+                        <SelectItem value={category.name} key={category.id}>{category.name}</SelectItem>
                       )
                     })}
                   </SelectGroup>

@@ -27,6 +27,21 @@ export class CategoryService {
     });
   }
 
+  async findAllByUser(userId: string) {
+    return this.prisma.category.findMany({
+      where: {
+        userId: userId
+      },
+      include: {
+        _count: {
+          select: {
+            tasks: true
+          }
+        }
+      }
+    })
+  }
+
   async createCategory(data: Prisma.CategoryCreateInput): Promise<Category> {
     return this.prisma.category.create({ data })
   }

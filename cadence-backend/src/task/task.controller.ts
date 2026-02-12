@@ -53,13 +53,6 @@ export class TaskController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('category-stats/:id')
-  async getCategoryStats(@Param('id') id: string) {
-    return this.TaskService.getCategoryStatsForUser(id)
-  }
-
-
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateTask(@Param('id') id: string, @Body() data: Prisma.TaskUncheckedUpdateInput): Promise<Task | null> {
     return this.TaskService.updateTask({
