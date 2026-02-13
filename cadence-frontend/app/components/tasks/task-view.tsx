@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Category } from "@/types/Category";
+import { Priority } from "@/types/Priority";
 import { Task } from "@/types/Task";
-import { Ellipsis, Pencil, ToggleLeft, Trash } from "lucide-react";
+import { Calendar, Ellipsis, Pencil, Timer, ToggleLeft, Trash } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 interface TaskViewProps {
@@ -19,11 +20,17 @@ interface TaskViewProps {
 }
 
 export function TaskView({ tasks, setTasks, selectedCategory, categories }: TaskViewProps) {
-
-  const categoryMap = new Map(categories?.map((category) => [category.id, category.name]) || [])
+  // const categoryMap = new Map(categories?.map((category) => [category.id, category.name]) || [])
   const categoryColorMap = new Map(
     categories?.map((category) => [category.id, category.color]) || []
   );
+
+  const priorityColorMap: Record<Priority, string> = {
+    Low: "#22c55e",
+    Medium: "#eab308",
+    High: "#f97316",
+    Urgent: "#ef4444"
+  }
 
   async function handlePauseTask(id: string, archived: boolean) {
     try {
@@ -77,13 +84,13 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
           if (selectedCategory && selectedCategory !== task.categoryId) {
             return null;
           }
-          const color = categoryColorMap.get(task.categoryId) || "gray"
-
+          const categoryColor = categoryColorMap.get(task.categoryId) || "gray"
+          const priorityColor = priorityColorMap[task.priority]
           return (
             <Card key={task.id} className={`flex ${task.archived ? 'opacity-50' : ""}`}>
               <div className="flex justify-between px-3">
                 <div className="flex items-center">
-                  <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: color }}></div>
+                  <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: categoryColor }}></div>
                   <CardTitle className="px-3 text-md">{task.name}</CardTitle>
                 </div>
                 <div className="flex items-center gap-2">
@@ -96,7 +103,7 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
                         <DropdownMenuItem><Pencil />Edit Task</DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => handlePauseTask(task.id, task.archived)}><ToggleLeft />{task.archived ? "Activate Task" : "Pause Task"}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handlePauseTask(task.id, task.archived)}><ToggleLeft />{task.archived ? "Activate Task" : "Pause Task"}</DropdownMenuItem>
                       </DropdownMenuGroup>
                       <DropdownMenuSeparator />
                       <AlertDialog>
@@ -123,8 +130,8 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
               <CardHeader className="px-3 text-muted-foreground">{task.description}</CardHeader>
               <CardContent className="px-3 text-muted-foreground text-xs">
                 <div className="flex gap-2">
-                  <Badge variant="outline">{task.frequency}</Badge>
-                  <Badge variant="outline">{categoryMap.get(task.categoryId)}</Badge>
+                  <Badge variant="outline"><Calendar className="w-4 h-4" /> {task.frequency}</Badge>
+                  <Badge style={{ backgroundColor: priorityColor }}><Timer className="w-4 h-4" />{task.priority}</Badge>
                 </div>
               </CardContent>
             </Card>

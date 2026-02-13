@@ -13,7 +13,7 @@ interface TaskCategoriesProps {
 export function TaskCategories({ categories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Badge
           variant={"secondary"}
           onClick={() => setSelectedCategory(null)}
