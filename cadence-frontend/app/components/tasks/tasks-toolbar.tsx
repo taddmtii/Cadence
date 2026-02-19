@@ -21,19 +21,47 @@ export function TaskToolbar({ setOpenCreateTask, setOpenCreateCategory }: TaskTo
           </Field>
         </div>
         <div className="flex gap-2">
-          <Button className="cursor-pointer" variant={"ghost"}>
-            <Filter className="w-4 h-4" />Filter
-          </Button>
-          <Button className="cursor-pointer" variant={"ghost"}>
-            <SlidersHorizontal className="w-4 h-4" />Sort
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="cursor-pointer" variant={"ghost"}>
+                <Filter className="w-4 h-4" />Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem>Due today</DropdownMenuItem>
+                <DropdownMenuItem>Upcoming</DropdownMenuItem>
+                <DropdownMenuItem>Low</DropdownMenuItem>
+                <DropdownMenuItem>Medium</DropdownMenuItem>
+                <DropdownMenuItem>High</DropdownMenuItem>
+                <DropdownMenuItem>Urgent</DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="cursor-pointer" variant={"ghost"}>
+                <SlidersHorizontal className="w-4 h-4" />Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem>Due Date</DropdownMenuItem>
+                <DropdownMenuItem>Priority (L-H)</DropdownMenuItem>
+                <DropdownMenuItem>Priority (H-L)</DropdownMenuItem>
+                <DropdownMenuItem>Recently Updated</DropdownMenuItem>
+                <DropdownMenuItem>Recently Created</DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-[#00f0a0] hover:bg-[#00c080] cursor-pointer" onClick={() => setOpenCreateTask(true)}>
                 <Plus className="w-4 h-4" /> Create
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="flex ">
+            <DropdownMenuContent>
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => setOpenCreateTask(true)}>Task</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setOpenCreateCategory(true)}>Category</DropdownMenuItem>
