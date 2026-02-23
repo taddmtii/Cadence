@@ -4,6 +4,9 @@ import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 function toTimeDate(time: string): Date {
+  if (time === "") {
+    return new Date(`1970-01-01T12:00:00.000Z`)
+  }
   return new Date(`1970-01-01T${time}:00.000Z`);
 }
 

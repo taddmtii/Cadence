@@ -75,7 +75,10 @@ export function CreateCategoryModal({ setOpenCreateCategory, setCategories }: Cr
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between">
-          <h2 className="text-lg font-bold mb-4">Create Category</h2>
+          <div className="flex flex-col mb-6">
+            <h2 className="text-lg font-bold">Create New Category</h2>
+            <span className="text-sm text-muted-foreground">Group your habits together in categories.</span>
+          </div>
           <Button
             onClick={() => handleClose()}
             className="cursor-pointer"
@@ -86,11 +89,11 @@ export function CreateCategoryModal({ setOpenCreateCategory, setCategories }: Cr
         <form className="w-full" onSubmit={handleCreateCategory}>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <FieldLabel htmlFor="name">Category Name</FieldLabel>
               <Input
                 id="name"
                 type="text"
-                placeholder=""
+                placeholder="e.g. Fitness, Cooking"
                 onChange={(e) => setCategoryName(e.target.value)}
                 required
               />

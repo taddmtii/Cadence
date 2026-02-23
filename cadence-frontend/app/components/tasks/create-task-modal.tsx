@@ -188,7 +188,6 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
                 id="time"
                 type="time"
                 onChange={(e) => setReminderTime(e.target.value)}
-                required
               />
             </Field>
             <Field>
