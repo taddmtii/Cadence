@@ -18,7 +18,6 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
   const { user } = useAuth()
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")
-  const [frequency, setFrequency] = useState("")
   const [category, setCategory] = useState("")
   const [creating, setCreating] = useState(false)
   const [priority, setPriority] = useState("")
@@ -54,7 +53,6 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
         body: JSON.stringify({
           name: taskName,
           description: description,
-          frequency: frequency,
           categoryId: categoryId,
           priority: priority,
           userId: user?.id
@@ -101,7 +99,10 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between">
-          <h2 className="text-lg font-bold mb-4">Create Task</h2>
+          <div className="flex flex-col mb-6">
+            <h2 className="text-lg font-bold">Create New Task</h2>
+            <span className="text-muted-foreground text-sm">Add a new habit or recurring task to track.</span>
+          </div>
           <Button
             onClick={() => handleClose()}
             className="cursor-pointer"
@@ -111,76 +112,63 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
         </div>
         <form className="w-full" onSubmit={handleCreateTask}>
           <FieldGroup>
-
             <Field>
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <FieldLabel htmlFor="name">Task Name</FieldLabel>
               <Input
                 id="name"
                 type="text"
-                placeholder=""
+                placeholder="e.g, Morning Run"
                 onChange={(e) => setTaskName(e.target.value)}
                 required
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="description">Description</FieldLabel>
+              <FieldLabel htmlFor="description">Description (optional)</FieldLabel>
               <Textarea
                 id="description"
-                placeholder=""
+                placeholder="Add details about this task..."
                 onChange={(e) => setDescription(e.target.value)}
                 required
-                className="h-40 resize-none"
+                className="h-20 resize-none"
               />
             </Field>
-            <Field>
-              <FieldLabel htmlFor="priority">Priority</FieldLabel>
-              <Select onValueChange={(value) => setPriority(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a priority"></SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Urgent">Urgent</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="frequency">Frequency</FieldLabel>
-              <Select onValueChange={(value) => setFrequency(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a frequency"></SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Daily">Daily</SelectItem>
-                    <SelectItem value="Weekly">Weekly</SelectItem>
-                    <SelectItem value="Biweekly">Biweekly</SelectItem>
-                    <SelectItem value="Monthly">Monthly</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="category">Category</FieldLabel>
-              <Select onValueChange={(value) => setCategory(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category"></SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {categories?.map((category) => {
-                      return (
-                        <SelectItem value={category.name} key={category.id}>{category.name}</SelectItem>
-                      )
-                    })}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
+            <div className="flex justify-between">
+              <Field className="w-60">
+                <FieldLabel htmlFor="category">Category</FieldLabel>
+                <Select onValueChange={(value) => setCategory(value)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category"></SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {categories?.map((category) => {
+                        return (
+                          <SelectItem value={category.name} key={category.id}>
+                            <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: category.color }}></div>
+                            {category.name}</SelectItem>
+                        )
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field className="w-30">
+                <FieldLabel htmlFor="priority">Priority</FieldLabel>
+                <Select onValueChange={(value) => setPriority(value)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a priority"></SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="Low">Low</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Urgent">Urgent</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
             <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
               {creating ? "Creating task..." : "Create Task"}
             </Button>

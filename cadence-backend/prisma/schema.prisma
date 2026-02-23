@@ -32,14 +32,6 @@ model Category {
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum Frequency {
-  Daily
-  Weekly
-  Biweekly
-  Monthly
-  Custom
-}
-
 enum DayOfWeek {
   Monday
   Tuesday
@@ -66,8 +58,8 @@ model Task {
   archivedAt    DateTime?
   description   String?
   priority      Priority?        @default(Low)
-  frequency     Frequency        @default(Daily)
   recurringDays DayOfWeek[]      @default([])
+  reminderTime  DateTime?        @db.Time
   category      Category         @relation(fields: [categoryId], references: [id])
   taskGroup     TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
   user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
