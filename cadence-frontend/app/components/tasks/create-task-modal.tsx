@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { Category } from "@/types/Category";
+import { DayOfWeek } from "@/types/DayOfWeek";
 import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
@@ -19,6 +20,8 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
   const [taskName, setTaskName] = useState("")
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState("")
+  const [reminderTime, setReminderTime] = useState("")
+  const [recurringDays, setRecurringDays] = useState<string[]>([])
   const [creating, setCreating] = useState(false)
   const [priority, setPriority] = useState("")
   const [isVisible, setIsVisible] = useState(false)
@@ -54,6 +57,8 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
           name: taskName,
           description: description,
           categoryId: categoryId,
+          reminderTime: reminderTime,
+          recurringDays: recurringDays,
           priority: priority,
           userId: user?.id
         })
@@ -86,6 +91,13 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
     setIsVisible(false)
     setTimeout(() => setOpenCreateTask(false), 200)
   }
+
+  function toggleDay(day: string) {
+    setRecurringDays((prev) => prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    )
+  }
+
+  const days: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
   return (<>
     <div
@@ -141,6 +153,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
+                      <SelectItem value="null">None</SelectItem>
                       {categories?.map((category) => {
                         return (
                           <SelectItem value={category.name} key={category.id}>
@@ -156,7 +169,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
                 <FieldLabel htmlFor="priority">Priority</FieldLabel>
                 <Select onValueChange={(value) => setPriority(value)}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a priority"></SelectValue>
+                    <SelectValue placeholder="e.g, Low"></SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -169,6 +182,33 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks }: Cre
                 </Select>
               </Field>
             </div>
+            <Field>
+              <FieldLabel htmlFor="timeOfDay">Time of Day (optional)</FieldLabel>
+              <Input
+                id="time"
+                type="time"
+                onChange={(e) => setReminderTime(e.target.value)}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="recurringDays">Schedule</FieldLabel>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  {days.map((day) => (
+                    <div key={day}>
+                      <Button type="button" onClick={() => toggleDay(day)} className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium ${recurringDays.includes(day) ? "bg-[#00f0a0] hover:bg-[#00c080]" : "bg-card text-white hover:text-white"}`}>
+                        {day.charAt(0)}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  {recurringDays.length === 7 ? "Every Day" : `${recurringDays.length} days per week`}
+                </p>
+
+              </div>
+            </Field>
             <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
               {creating ? "Creating task..." : "Create Task"}
             </Button>

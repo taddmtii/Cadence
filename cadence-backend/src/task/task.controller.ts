@@ -1,7 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import { Priority, Prisma, Task } from '@prisma/client';
+import { DayOfWeek, Priority, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
+function toTimeDate(time: string): Date {
+  return new Date(`1970-01-01T${time}:00.000Z`);
+}
 
 @Controller('task')
 export class TaskController {
@@ -14,6 +18,8 @@ export class TaskController {
       name: string,
       description: string,
       categoryId: string,
+      reminderTime: string,
+      recurringDays: DayOfWeek[],
       priority: Priority,
       userId: string,
     },
@@ -24,6 +30,8 @@ export class TaskController {
       category: {
         connect: { id: data.categoryId }
       },
+      reminderTime: toTimeDate(data.reminderTime),
+      recurringDays: data.recurringDays,
       priority: data.priority,
       user: {
         connect: { id: data.userId }
