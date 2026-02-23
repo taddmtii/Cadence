@@ -37,6 +37,17 @@ enum Frequency {
   Weekly
   Biweekly
   Monthly
+  Custom
+}
+
+enum DayOfWeek {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
 }
 
 enum Priority {
@@ -47,22 +58,23 @@ enum Priority {
 }
 
 model Task {
-  id          String           @id @default(uuid())
-  name        String
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime?        @updatedAt
-  archived    Boolean          @default(false)
-  archivedAt  DateTime?
-  description String?
-  priority    Priority?        @default(Low)
-  frequency   Frequency        @default(Daily)
-  category    Category         @relation(fields: [categoryId], references: [id])
-  taskGroup   TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId  String
-  taskGroupId String?
-  userId      String
-  completions TaskCompletion[]
+  id            String           @id @default(uuid())
+  name          String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime?        @updatedAt
+  archived      Boolean          @default(false)
+  archivedAt    DateTime?
+  description   String?
+  priority      Priority?        @default(Low)
+  frequency     Frequency        @default(Daily)
+  recurringDays DayOfWeek[]      @default([])
+  category      Category         @relation(fields: [categoryId], references: [id])
+  taskGroup     TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String
+  taskGroupId   String?
+  userId        String
+  completions   TaskCompletion[]
 
   @@index([userId])
   @@index([categoryId])

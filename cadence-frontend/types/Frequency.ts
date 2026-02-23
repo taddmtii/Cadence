@@ -3,4 +3,5 @@ export enum Frequency {
   Weekly,
   Biweekly,
   Monthly,
+  Custom
 }
