@@ -86,6 +86,8 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
           }
           const categoryColor = categoryColorMap.get(task.categoryId) || "gray"
           const priorityColor = priorityColorMap[task.priority]
+          const reminderTime: Date = new Date(task.reminderTime!)
+          const dayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
           return (
             <Card key={task.id} className={`flex ${task.archived ? 'opacity-50' : ""}`}>
               <div className="flex justify-between px-3">
@@ -130,7 +132,13 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
               <CardHeader className="px-3 text-muted-foreground">{task.description}</CardHeader>
               <CardContent className="px-3 text-muted-foreground text-xs">
                 <div className="flex gap-2">
-                  <Badge variant="outline"><Calendar className="w-4 h-4" /> {task.frequency}</Badge>
+                  <Badge variant="outline"><Calendar className="w-4 h-4" />{task.recurringDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)).join(", ")}</Badge>
+                  {task.reminderTime ? <Badge variant="outline"><Calendar className="w-4 h-4" />{reminderTime.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                    timeZone: 'UTC'
+                  })}</Badge> : ""}
                   <Badge style={{ backgroundColor: priorityColor }}><Timer className="w-4 h-4" />{task.priority}</Badge>
                 </div>
               </CardContent>

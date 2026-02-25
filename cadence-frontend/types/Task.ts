@@ -1,4 +1,4 @@
-import { Frequency } from "./Frequency";
+import { DayOfWeek } from "./DayOfWeek";
 import { Priority } from "./Priority";
 
 export interface Task {
@@ -9,8 +9,9 @@ export interface Task {
   archived: boolean;
   archivedAt: Date | null;
   description: string | null;
-  priority: Priority
-  frequency: Frequency
+  priority: Priority;
+  recurringDays: DayOfWeek[];
+  reminderTime: Date | null;
   categoryId: string;
   taskGroupId: string | null;
   userId: string;
