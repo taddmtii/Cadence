@@ -60,10 +60,10 @@ model Task {
   priority      Priority?        @default(Low)
   recurringDays DayOfWeek[]      @default([])
   reminderTime  DateTime?        @db.Time
-  category      Category         @relation(fields: [categoryId], references: [id])
+  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   taskGroup     TaskGroup?       @relation(fields: [taskGroupId], references: [id], onUpdate: Cascade)
   user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId    String
+  categoryId    String?
   taskGroupId   String?
   userId        String
   completions   TaskCompletion[]

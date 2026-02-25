@@ -68,7 +68,7 @@ export default function TasksPage() {
             <Skeleton className="p-4 w-20" />
             <Skeleton className="p-4 w-20" />
           </div>
-        ) : <TaskCategories categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
+        ) : <TaskCategories categories={categories} setCategories={setCategories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
         <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} />
       </div>
     </>

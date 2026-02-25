@@ -1,16 +1,45 @@
 'use client'
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Category } from "@/types/Category";
+import { Ellipsis, Pencil, Trash } from "lucide-react";
 import { Dispatch, SetStateAction } from "react"
 
 interface TaskCategoriesProps {
   categories: Category[] | null | undefined
+  setCategories: Dispatch<SetStateAction<Category[] | null | undefined>>
   selectedCategory: string | null
   setSelectedCategory: Dispatch<SetStateAction<string | null>>
 }
 
-export function TaskCategories({ categories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
+export function TaskCategories({ categories, setCategories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
+
+  async function handleCategoryDelete(id: string) {
+    try {
+      const res = await fetch(`http://localhost:3000/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+          id: id,
+        })
+      })
+      console.log(res)
+      if (res.ok) {
+        setCategories(prev => prev ? prev.filter(cat => cat.id !== id) : prev);
+      }
+
+    }
+    catch (e) {
+      throw new Error("Error in deleting task.")
+    }
+
+  }
   return (
     <>
       <div className="flex gap-2 flex-wrap">
@@ -34,6 +63,36 @@ export function TaskCategories({ categories, selectedCategory, setSelectedCatego
                   <div className={`h-2 w-2 rounded-full`} style={{ backgroundColor: color }}></div>
                   <h1>{category.name}</h1>
                   <p>{category._count?.tasks ?? 0}</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost"><Ellipsis className="w-2 h-2" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem><Pencil />Edit Category</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}><Trash /> Delete Category</DropdownMenuItem>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Category?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete this category.
+
+                                The tasks associated with this category will be orphaned and thus show up under All Tasks.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleCategoryDelete(category.id)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </Badge>
             </div >
