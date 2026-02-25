@@ -2,6 +2,7 @@
 
 import { CreateCategoryModal } from "@/app/components/tasks/create-category-modal"
 import { CreateTaskModal } from "@/app/components/tasks/create-task-modal"
+import { EditCategoryModal } from "@/app/components/tasks/edit-category.modal"
 import { TaskCategories } from "@/app/components/tasks/task-categories"
 import { TaskView } from "@/app/components/tasks/task-view"
 import { TaskToolbar } from "@/app/components/tasks/tasks-toolbar"
@@ -15,6 +16,7 @@ export default function TasksPage() {
   const { user } = useAuth()
   const [openCreateTask, setOpenCreateTask] = useState(false)
   const [openCreateCategory, setOpenCreateCategory] = useState(false)
+  const [openEditCategory, setOpenEditCategory] = useState(false)
   const [categories, setCategories] = useState<Category[] | null | undefined>(null)
   const [tasks, setTasks] = useState<Task[] | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -30,7 +32,6 @@ export default function TasksPage() {
     })
 
     const allCategoriesData = await allCategories.json()
-    console.log(allCategoriesData)
     setCategories(allCategoriesData)
 
     // Get all tasks for user for display
@@ -62,6 +63,9 @@ export default function TasksPage() {
         {openCreateCategory ? (
           <CreateCategoryModal setOpenCreateCategory={setOpenCreateCategory} setCategories={setCategories} />
         ) : null}
+        {/*{openEditCategory ? (
+          <EditCategoryModal category={ } setCategories={setCategories} setOpenEditCategory={setOpenEditCategory} />
+        ) : null}*/}
         {isLoading ? (
           <div className="flex gap-4">
             <Skeleton className="p-4 w-20" />

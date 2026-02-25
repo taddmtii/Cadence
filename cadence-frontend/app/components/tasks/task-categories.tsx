@@ -65,7 +65,7 @@ export function TaskCategories({ categories, setCategories, selectedCategory, se
                   <p>{category._count?.tasks ?? 0}</p>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost"><Ellipsis className="w-2 h-2" /></Button>
+                      <Button className="w-2 h-2 cursor-pointer" variant="ghost"><Ellipsis /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
