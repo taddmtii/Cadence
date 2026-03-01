@@ -9,7 +9,7 @@ import { Category } from "@/types/Category";
 interface EditCategoryModalProps {
   setOpenEditCategory: Dispatch<SetStateAction<boolean>>
   setCategories: Dispatch<SetStateAction<Category[] | null | undefined>>
-  category: Category
+  category: Category | undefined | null
 }
 
 export function EditCategoryModal({ setOpenEditCategory, setCategories, category }: EditCategoryModalProps) {
@@ -24,7 +24,7 @@ export function EditCategoryModal({ setOpenEditCategory, setCategories, category
   async function handleUpdateCategory(e) {
     e.preventDefault()
     setEditing(true)
-    const categoryRes = await fetch(`http://localhost:3000/category/`, {
+    const categoryRes = await fetch(`http://localhost:3000/category/${category?.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,10 @@ export function EditCategoryModal({ setOpenEditCategory, setCategories, category
     }
     const newCategory = await categoryRes.json()
     setEditing(false)
-    setCategories(prev => prev ? [...prev, newCategory] : [newCategory])
+    setCategories(prev => prev
+      ? prev.map(cat => cat.id === newCategory.id ? newCategory : cat)
+      : [newCategory]
+    )
     handleClose()
   }
 
@@ -54,6 +57,13 @@ export function EditCategoryModal({ setOpenEditCategory, setCategories, category
       setIsVisible(true)
     })
   }, [])
+
+  useEffect(() => {
+    if (category) {
+      setCategoryName(category.name)
+      setColor(category.color)
+    }
+  }, [category])
 
   function handleClose() {
     setIsVisible(false)
@@ -94,7 +104,7 @@ export function EditCategoryModal({ setOpenEditCategory, setCategories, category
               <Input
                 id="name"
                 type="text"
-                value={category.name}
+                value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 required
               />
@@ -106,7 +116,7 @@ export function EditCategoryModal({ setOpenEditCategory, setCategories, category
                   style={{ backgroundColor: color }}
                   className="w-10 h-10 rounded border-2 border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
                   title="Click to pick the category color" />
-                <Input id="color" type="text" value={category.color} onChange={(e) => setColor(e.target.value)} placeholder="#000000" className="flex-1" />
+                <Input id="color" type="text" value={color} onChange={(e) => setColor(e.target.value)} placeholder="#000000" className="flex-1" />
               </div>
               {showPicker && (
                 <div className="mt-2 relative">

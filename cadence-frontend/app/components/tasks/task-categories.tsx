@@ -13,9 +13,11 @@ interface TaskCategoriesProps {
   setCategories: Dispatch<SetStateAction<Category[] | null | undefined>>
   selectedCategory: string | null
   setSelectedCategory: Dispatch<SetStateAction<string | null>>
+  setSelectedEditCategory: Dispatch<SetStateAction<Category | null>>
+  setOpenEditCategory: Dispatch<SetStateAction<boolean>>
 }
 
-export function TaskCategories({ categories, setCategories, selectedCategory, setSelectedCategory }: TaskCategoriesProps) {
+export function TaskCategories({ categories, setCategories, selectedCategory, setSelectedCategory, setSelectedEditCategory, setOpenEditCategory }: TaskCategoriesProps) {
 
   async function handleCategoryDelete(id: string) {
     try {
@@ -69,7 +71,10 @@ export function TaskCategories({ categories, setCategories, selectedCategory, se
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
-                        <DropdownMenuItem><Pencil />Edit Category</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          setSelectedEditCategory(category)
+                          setOpenEditCategory(true)
+                        }}><Pencil />Edit Category</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <AlertDialog>
                           <AlertDialogTrigger asChild>

@@ -20,6 +20,7 @@ export default function TasksPage() {
   const [categories, setCategories] = useState<Category[] | null | undefined>(null)
   const [tasks, setTasks] = useState<Task[] | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedEditCategory, setSelectedEditCategory] = useState<Category | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
@@ -63,16 +64,22 @@ export default function TasksPage() {
         {openCreateCategory ? (
           <CreateCategoryModal setOpenCreateCategory={setOpenCreateCategory} setCategories={setCategories} />
         ) : null}
-        {/*{openEditCategory ? (
-          <EditCategoryModal category={ } setCategories={setCategories} setOpenEditCategory={setOpenEditCategory} />
-        ) : null}*/}
+        {openEditCategory ? (
+          <EditCategoryModal category={selectedEditCategory} setCategories={setCategories} setOpenEditCategory={setOpenEditCategory} />
+        ) : null}
         {isLoading ? (
           <div className="flex gap-4">
             <Skeleton className="p-4 w-20" />
             <Skeleton className="p-4 w-20" />
             <Skeleton className="p-4 w-20" />
           </div>
-        ) : <TaskCategories categories={categories} setCategories={setCategories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
+        ) : <TaskCategories categories={categories}
+          setCategories={setCategories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          setSelectedEditCategory={setSelectedEditCategory}
+          setOpenEditCategory={setOpenEditCategory}
+        />}
         <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} />
       </div>
     </>
