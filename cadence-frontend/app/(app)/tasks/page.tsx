@@ -80,7 +80,19 @@ export default function TasksPage() {
           setSelectedEditCategory={setSelectedEditCategory}
           setOpenEditCategory={setOpenEditCategory}
         />}
-        <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} />
+        <div className="flex flex-col border border-accent rounded-2xl p-8 gap-6">
+          <div className="flex flex-col gap-1">
+            <p className="font-bold">{selectedCategory ? selectedCategory : "Your Tasks"}</p>
+            <p className="text-sm text-muted-foreground">Manage your habits and recurring tasks.</p>
+          </div>
+          {isLoading ? (
+            <div className="flex flex-col gap-4">
+              <Skeleton className="p-16 w-90vw" />
+              <Skeleton className="p-16 w-90vw" />
+              <Skeleton className="p-16 w-90vw" />
+            </div>
+          ) : <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} />}
+        </div>
       </div>
     </>
   )
