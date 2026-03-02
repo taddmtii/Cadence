@@ -2,7 +2,8 @@
 
 import { CreateCategoryModal } from "@/app/components/tasks/create-category-modal"
 import { CreateTaskModal } from "@/app/components/tasks/create-task-modal"
-import { EditCategoryModal } from "@/app/components/tasks/edit-category.modal"
+import { EditCategoryModal } from "@/app/components/tasks/edit-category-modal"
+import { EditTaskModal } from "@/app/components/tasks/edit-task-modal"
 import { TaskCategories } from "@/app/components/tasks/task-categories"
 import { TaskView } from "@/app/components/tasks/task-view"
 import { TaskToolbar } from "@/app/components/tasks/tasks-toolbar"
@@ -17,9 +18,11 @@ export default function TasksPage() {
   const [openCreateTask, setOpenCreateTask] = useState(false)
   const [openCreateCategory, setOpenCreateCategory] = useState(false)
   const [openEditCategory, setOpenEditCategory] = useState(false)
+  const [openEditTask, setOpenEditTask] = useState(false)
   const [categories, setCategories] = useState<Category[] | null | undefined>(null)
   const [tasks, setTasks] = useState<Task[] | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [selectedEditCategory, setSelectedEditCategory] = useState<Category | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -34,7 +37,6 @@ export default function TasksPage() {
 
     const allCategoriesData = await allCategories.json()
     setCategories(allCategoriesData)
-
     // Get all tasks for user for display
     const tasks = await fetch(`http://localhost:3000/task/allTasksForUser/${user?.id}`, {
       headers: {
@@ -59,13 +61,16 @@ export default function TasksPage() {
         </div>
         <TaskToolbar setOpenCreateTask={setOpenCreateTask} setOpenCreateCategory={setOpenCreateCategory} />
         {openCreateTask ? (
-          <CreateTaskModal categories={categories} setOpenCreateTask={setOpenCreateTask} setTasks={setTasks} />
+          <CreateTaskModal categories={categories} setOpenCreateTask={setOpenCreateTask} setTasks={setTasks} onSuccess={fetchData} />
         ) : null}
         {openCreateCategory ? (
           <CreateCategoryModal setOpenCreateCategory={setOpenCreateCategory} setCategories={setCategories} />
         ) : null}
         {openEditCategory ? (
           <EditCategoryModal category={selectedEditCategory} setCategories={setCategories} setOpenEditCategory={setOpenEditCategory} />
+        ) : null}
+        {openEditTask ? (
+          <EditTaskModal categories={categories} setOpenEditTask={setOpenEditTask} setTasks={setTasks} task={selectedTask} onSuccess={fetchData} />
         ) : null}
         {isLoading ? (
           <div className="flex gap-4">
@@ -82,7 +87,7 @@ export default function TasksPage() {
         />}
         <div className="flex flex-col border border-accent rounded-2xl p-8 gap-6">
           <div className="flex flex-col gap-1">
-            <p className="font-bold">{selectedCategory ? selectedCategory : "Your Tasks"}</p>
+            <p className="font-bold">{selectedCategory ? categories?.find((cat) => cat.id === selectedCategory)?.name + " Tasks" : "Your Tasks"}</p>
             <p className="text-sm text-muted-foreground">Manage your habits and recurring tasks.</p>
           </div>
           {isLoading ? (
@@ -91,7 +96,7 @@ export default function TasksPage() {
               <Skeleton className="p-16 w-90vw" />
               <Skeleton className="p-16 w-90vw" />
             </div>
-          ) : <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} />}
+          ) : <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} setOpenEditTask={setOpenEditTask} setSelectedTask={setSelectedTask} />}
         </div>
       </div>
     </>

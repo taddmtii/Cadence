@@ -9,77 +9,60 @@ import { DayOfWeek } from "@/types/DayOfWeek";
 import { Task } from "@/types/Task";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-interface CreateTaskModalProps {
+interface EditTaskModalProps {
   categories: Category[] | null | undefined
-  setOpenCreateTask: Dispatch<SetStateAction<boolean>>
+  setOpenEditTask: Dispatch<SetStateAction<boolean>>
   setTasks: Dispatch<SetStateAction<Task[] | null>>
+  task: Task | undefined | null
   onSuccess: () => void
 }
 
-export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuccess }: CreateTaskModalProps) {
+export function EditTaskModal({ categories, setOpenEditTask, setTasks, task, onSuccess }: EditTaskModalProps) {
   const { user } = useAuth()
-  const [taskName, setTaskName] = useState("")
-  const [description, setDescription] = useState("")
-  const [category, setCategory] = useState("")
-  const [reminderTime, setReminderTime] = useState("")
-  const [recurringDays, setRecurringDays] = useState<string[]>([])
-  const [creating, setCreating] = useState(false)
-  const [priority, setPriority] = useState("")
+  const [taskName, setTaskName] = useState(task?.name)
+  const [description, setDescription] = useState(task?.description)
+  const [category, setCategory] = useState(categories?.find((cat) => cat.id === task?.categoryId)?.name ?? "")
+  const [reminderTime, setReminderTime] = useState(task?.reminderTime ? new Date(task.reminderTime).toISOString().slice(11, 16) : "")
+  const [recurringDays, setRecurringDays] = useState<DayOfWeek[]>(task?.recurringDays ?? [])
+  const [editing, setEditing] = useState(false)
+  const [priority, setPriority] = useState(task?.priority)
   const [isVisible, setIsVisible] = useState(false)
 
-  async function handleCreateTask(e) {
+  async function handleEditTask(e) {
     e.preventDefault()
-    setCreating(true)
-    const categoryRes = await fetch(`http://localhost:3000/category/category-name/${category}`, {
+    setEditing(true)
+    const taskRes = await fetch(`http://localhost:3000/task/${task?.id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
       },
+      body: JSON.stringify({
+        name: taskName,
+        description: description,
+        categoryId: categories?.find((cat) => cat.name === category)?.id,
+        reminderTime: reminderTime ? `1970-01-01T${reminderTime}:00.000Z` : null,
+        recurringDays: recurringDays,
+        priority: priority,
+        userId: user?.id
+      })
     })
 
-    if (!categoryRes.ok) {
-      if (categoryRes.status === 401) {
+    if (!taskRes.ok) {
+      if (taskRes.status === 401) {
         throw new Error("Unauthorized")
       }
-      throw new Error("Could not retrieve categories")
+      throw new Error("Could not update task.")
     }
 
-    const data = await categoryRes.json()
-    const categoryId = data.id
-
-    try {
-      const res = await fetch('http://localhost:3000/task', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          name: taskName,
-          description: description,
-          categoryId: categoryId,
-          reminderTime: reminderTime,
-          recurringDays: recurringDays,
-          priority: priority,
-          userId: user?.id
-        })
-      });
-      if (!res.ok) {
-        if (res.status === 401) {
-          throw new Error("Unauthorized")
-        }
-        throw new Error("Task Creation failed, ", e)
-      }
-      const newTask = await res.json()
-      setCreating(false)
-      setTasks(prev => prev ? [...prev, newTask] : [newTask])
-      onSuccess() // refetch data for rerenders.
-      setOpenCreateTask(false)
-    } catch (e) {
-      setCreating(false)
-      handleClose()
-      throw new Error(e)
-    }
+    const data = await taskRes.json()
+    setEditing(false)
+    setTasks(prev => prev
+      ? prev.map(task => task.id === data.id ? data : task)
+      : [data]
+    )
+    handleClose()
+    onSuccess()
   }
 
   useEffect(() => {
@@ -90,7 +73,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
 
   function handleClose() {
     setIsVisible(false)
-    setTimeout(() => setOpenCreateTask(false), 200)
+    setTimeout(() => setOpenEditTask(false), 200)
   }
 
   function toggleDay(day: string) {
@@ -113,8 +96,8 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
       >
         <div className="flex justify-between">
           <div className="flex flex-col mb-6">
-            <h2 className="text-lg font-bold">Create New Task</h2>
-            <span className="text-muted-foreground text-sm">Add a new habit or recurring task to track.</span>
+            <h2 className="text-lg font-bold">Edit Task</h2>
+            <span className="text-muted-foreground text-sm">Make any changes you need.</span>
           </div>
           <Button
             onClick={() => handleClose()}
@@ -123,7 +106,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
             Close
           </Button>
         </div>
-        <form className="w-full" onSubmit={handleCreateTask}>
+        <form className="w-full" onSubmit={handleEditTask}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="name">Task Name</FieldLabel>
@@ -131,6 +114,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
                 id="name"
                 type="text"
                 placeholder="e.g, Morning Run"
+                value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 required
               />
@@ -140,6 +124,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
               <Textarea
                 id="description"
                 placeholder="Add details about this task..."
+                value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
                 className="h-20 resize-none"
@@ -148,7 +133,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
             <div className="flex justify-between">
               <Field className="w-60">
                 <FieldLabel htmlFor="category">Category</FieldLabel>
-                <Select onValueChange={(value) => setCategory(value)}>
+                <Select value={category} onValueChange={(value) => setCategory(value)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a category"></SelectValue>
                   </SelectTrigger>
@@ -168,7 +153,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
               </Field>
               <Field className="w-30">
                 <FieldLabel htmlFor="priority">Priority</FieldLabel>
-                <Select onValueChange={(value) => setPriority(value)}>
+                <Select value={priority} onValueChange={(value) => setPriority(value)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="e.g, Low"></SelectValue>
                   </SelectTrigger>
@@ -188,6 +173,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
               <Input
                 id="time"
                 type="time"
+                value={reminderTime}
                 onChange={(e) => setReminderTime(e.target.value)}
               />
             </Field>
@@ -210,7 +196,7 @@ export function CreateTaskModal({ categories, setOpenCreateTask, setTasks, onSuc
               </div>
             </Field>
             <Button type="submit" className="bg-[#00f0a0] hover:bg-[#00c080] w-full cursor-pointer">
-              {creating ? "Creating task..." : "Create Task"}
+              {editing ? "Saving..." : "Save"}
             </Button>
           </FieldGroup>
         </form>

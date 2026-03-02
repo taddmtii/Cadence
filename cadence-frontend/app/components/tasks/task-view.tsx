@@ -17,10 +17,11 @@ interface TaskViewProps {
   setTasks: Dispatch<SetStateAction<Task[] | null>>
   selectedCategory: string | null
   categories: Category[] | null | undefined
+  setOpenEditTask: Dispatch<SetStateAction<boolean>>
+  setSelectedTask: Dispatch<SetStateAction<Task | null>>
 }
 
-export function TaskView({ tasks, setTasks, selectedCategory, categories }: TaskViewProps) {
-  // const categoryMap = new Map(categories?.map((category) => [category.id, category.name]) || [])
+export function TaskView({ tasks, setTasks, selectedCategory, categories, setOpenEditTask, setSelectedTask }: TaskViewProps) {
   const categoryColorMap = new Map(
     categories?.map((category) => [category.id, category.color]) || []
   );
@@ -104,7 +105,7 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories }: Task
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
-                        <DropdownMenuItem><Pencil />Edit Task</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setSelectedTask(task); setOpenEditTask(true) }}><Pencil />Edit Task</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handlePauseTask(task.id, task.archived)}><ToggleLeft />{task.archived ? "Activate Task" : "Pause Task"}</DropdownMenuItem>
                       </DropdownMenuGroup>
                       <DropdownMenuSeparator />
