@@ -19,9 +19,10 @@ interface TaskViewProps {
   categories: Category[] | null | undefined
   setOpenEditTask: Dispatch<SetStateAction<boolean>>
   setSelectedTask: Dispatch<SetStateAction<Task | null>>
+  searchTerm: string
 }
 
-export function TaskView({ tasks, setTasks, selectedCategory, categories, setOpenEditTask, setSelectedTask }: TaskViewProps) {
+export function TaskView({ tasks, setTasks, selectedCategory, categories, setOpenEditTask, setSelectedTask, searchTerm }: TaskViewProps) {
   const categoryColorMap = new Map(
     categories?.map((category) => [category.id, category.color]) || []
   );
@@ -76,11 +77,11 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories, setOpe
     }
   }
 
-
+  const filtered = tasks?.filter((task) => task.name.includes(searchTerm) || task.description?.includes(searchTerm))
   return (
     <>
       <div className="flex flex-col gap-2">
-        {tasks?.map((task) => {
+        {filtered?.map((task) => {
           // Filters for only tasks under the current category selected. Early return if no match.
           if (selectedCategory && selectedCategory !== task.categoryId) {
             return null;

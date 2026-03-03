@@ -24,6 +24,7 @@ export default function TasksPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [selectedEditCategory, setSelectedEditCategory] = useState<Category | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
@@ -59,7 +60,7 @@ export default function TasksPage() {
           <h1 className="font-bold">Tasks</h1>
           <span className="text-muted-foreground">Manage your habits and recurring tasks</span>
         </div>
-        <TaskToolbar setOpenCreateTask={setOpenCreateTask} setOpenCreateCategory={setOpenCreateCategory} />
+        <TaskToolbar setOpenCreateTask={setOpenCreateTask} setOpenCreateCategory={setOpenCreateCategory} setSearchTerm={setSearchTerm} />
         {openCreateTask ? (
           <CreateTaskModal categories={categories} setOpenCreateTask={setOpenCreateTask} setTasks={setTasks} onSuccess={fetchData} />
         ) : null}
@@ -96,7 +97,7 @@ export default function TasksPage() {
               <Skeleton className="p-16 w-90vw" />
               <Skeleton className="p-16 w-90vw" />
             </div>
-          ) : <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} setOpenEditTask={setOpenEditTask} setSelectedTask={setSelectedTask} />}
+          ) : <TaskView tasks={tasks} setTasks={setTasks} selectedCategory={selectedCategory} categories={categories} setOpenEditTask={setOpenEditTask} setSelectedTask={setSelectedTask} searchTerm={searchTerm} />}
         </div>
       </div>
     </>

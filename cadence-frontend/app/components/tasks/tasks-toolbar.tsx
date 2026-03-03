@@ -8,16 +8,16 @@ import { Dispatch, SetStateAction } from "react";
 interface TaskToolBarProps {
   setOpenCreateTask: Dispatch<SetStateAction<boolean>>
   setOpenCreateCategory: Dispatch<SetStateAction<boolean>>
+  setSearchTerm: Dispatch<SetStateAction<string>>
 }
 
-export function TaskToolbar({ setOpenCreateTask, setOpenCreateCategory }: TaskToolBarProps) {
+export function TaskToolbar({ setOpenCreateTask, setOpenCreateCategory, setSearchTerm }: TaskToolBarProps) {
   return (
     <>
       <div className="flex w-full items-center justify-between">
         <div className="flex">
           <Field orientation="horizontal">
-            <Input type="search" placeholder="Search..." />
-            <Button>Search</Button>
+            <Input className="w-100" type="search" placeholder="Search..." onChange={(e) => setSearchTerm(e.target.value)} />
           </Field>
         </div>
         <div className="flex gap-2">
