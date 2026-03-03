@@ -77,7 +77,7 @@ export function TaskView({ tasks, setTasks, selectedCategory, categories, setOpe
     }
   }
 
-  const filtered = tasks?.filter((task) => task.name.includes(searchTerm) || task.description?.includes(searchTerm))
+  const filtered = tasks?.filter((task) => task.name.toLowerCase().includes(searchTerm.toLowerCase()) || task.description?.toLowerCase().includes(searchTerm.toLowerCase()))
   return (
     <>
       <div className="flex flex-col gap-2">
