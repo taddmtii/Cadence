@@ -56,6 +56,46 @@ export class TaskController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('allTasksForTodayForUser/:id')
+  async getAllTasksForTodayForUser(@Param('id') id: string): Promise<Task[] | null> {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }) as DayOfWeek
+
+    return this.TaskService.tasks({
+      where: {
+        userId: id,
+        recurringDays: { has: today }
+      }
+    })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('allCompletedTasksForTodayForUser/:id')
+  async getAllCompletedTasksForTodayForUser(@Param('id') id: string): Promise<Task[] | null> {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }) as DayOfWeek
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return this.TaskService.tasks({
+      where: {
+        userId: id,
+        recurringDays: { has: today },
+        completions: {
+          some: {
+            completedAt: {
+              gte: startOfDay,
+              lte: endOfDay
+            }
+          }
+        }
+      }
+    })
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('allTasksForUser/:id')
   async getAllTasksForUser(@Param('id') id: string): Promise<Task[] | null> {
     return this.TaskService.tasks({ where: { userId: id } })

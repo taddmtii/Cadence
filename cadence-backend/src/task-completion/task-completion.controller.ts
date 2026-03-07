@@ -14,30 +14,30 @@ export class TaskCompletionController {
     return this.TaskCompletionService.createTaskCompletions(data);
   }
 
-  // Get TaskGroup by ID
+  // Get TaskCompletion by ID
   @Get(':id')
-  async getTaskGroupById(@Param('id') id: string): Promise<TaskCompletion | null> {
+  async getTaskCompletionById(@Param('id') id: string): Promise<TaskCompletion | null> {
     return this.TaskCompletionService.taskCompletion({ id: id });
   }
 
-  // Get all TaskGroups
+  // Get all TaskCompletion
   @Get()
-  async getAllTaskGroups(): Promise<TaskCompletion[] | null> {
+  async getAllTaskCompletions(): Promise<TaskCompletion[] | null> {
     return this.TaskCompletionService.taskCompletions({})
   }
 
-  // Update TaskGroup via ID
+  // Update TaskCompletion via ID
   @Patch(':id')
-  async updateTaskGroup(@Param('id') id: string, @Body() data: { date: Date; completedAt: Date; taskId: string; userId: string }): Promise<TaskCompletion | null> {
+  async updateTaskCompletion(@Param('id') id: string, @Body() data: { date: Date; completedAt: Date; taskId: string; userId: string }): Promise<TaskCompletion | null> {
     return this.TaskCompletionService.updateTaskCompletions({
       where: { id },
       data: data
     })
   }
 
-  // Delete TaskGroup ID
+  // Delete TaskCompletion ID
   @Delete(':id')
-  async deleteTaskGroup(@Param('id') id: string): Promise<TaskCompletion> {
+  async deleteTaskCompletion(@Param('id') id: string): Promise<TaskCompletion> {
     return this.TaskCompletionService.deleteTaskCompletions({ id })
   }
 }

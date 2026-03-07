@@ -1,35 +1,79 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Task } from "@/types/Task";
 import { Flame } from "lucide-react";
 
-// interface StatsCardsProps {
-//   tasksCompletedToday: number;
-//   totalTasksCount: number;
+interface StatsCardsProps {
+  isLoading: boolean;
+  allTasksForToday: Task[];
+  allCompletedTasksForToday: Task[];
+}
 
-// }
+export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForToday }: StatsCardsProps) {
 
-export function StatsCards() {
   return (
     <>
       <div className="flex w-full gap-4">
         <Card className="flex-1 h-40 justify-center">
-          <CardHeader>
-            <CardDescription>Completed Today</CardDescription>
-          </CardHeader>
+          {isLoading ? (
+            <div className="flex px-6 flex-col gap-3">
+              <Skeleton className="h-4 w-[50%]" />
+              <Skeleton className="h-8 w-[80%]" />
+            </div>
+          ) : (
+            <CardHeader>
+              <CardDescription>Completed Today</CardDescription>
+              <CardContent className="px-0">
+                <div>
+                  <span className="font-bold text-2xl">{allCompletedTasksForToday ? allCompletedTasksForToday.length : ""}</span>
+                  <span className="text-sm text-muted-foreground"> /{allTasksForToday ? allTasksForToday.length : ""}</span>
+                </div>
+              </CardContent>
+            </CardHeader>
+          )
+          }
         </Card>
+
         <Card className="flex-1 h-40 justify-center">
-          <CardHeader>
-            <CardDescription>Current Streak</CardDescription>
-          </CardHeader>
+          {isLoading ? (
+            <div className="flex px-6 flex-col gap-3">
+              <Skeleton className="h-4 w-[50%]" />
+              <Skeleton className="h-8 w-[80%]" />
+            </div>
+          ) : (
+            <CardHeader>
+              <CardDescription>Current Streak</CardDescription>
+            </CardHeader>
+          )
+          }
         </Card>
+
         <Card className="flex-1 h-40 justify-center">
-          <CardHeader>
-            <CardDescription>Weekly Goal</CardDescription>
-          </CardHeader>
+          {isLoading ? (
+            <div className="flex px-6 flex-col gap-3">
+              <Skeleton className="h-4 w-[50%]" />
+              <Skeleton className="h-8 w-[80%]" />
+            </div>
+          ) : (
+            <CardHeader>
+              <CardDescription>Weekly Goal</CardDescription>
+            </CardHeader>
+          )
+          }
         </Card>
+
         <Card className="flex-1 h-40 justify-center">
-          <CardHeader>
-            <CardDescription>Improvement</CardDescription>
-          </CardHeader>
+          {isLoading ? (
+            <div className="flex px-6 flex-col gap-3">
+              <Skeleton className="h-4 w-[50%]" />
+              <Skeleton className="h-8 w-[80%]" />
+            </div>
+          ) : (
+            <CardHeader>
+              <CardDescription>Improvement</CardDescription>
+            </CardHeader>
+          )
+          }
         </Card>
       </div>
       <div className="flex w-full gap-4">
