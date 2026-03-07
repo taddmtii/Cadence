@@ -1,6 +1,12 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 
+// interface StatsCardsProps {
+//   tasksCompletedToday: number;
+//   totalTasksCount: number;
+
+// }
+
 export function StatsCards() {
   return (
     <>
