@@ -13,7 +13,6 @@ export default function DashboardPage() {
         <span className="text-muted-foreground">Welcome back, {user?.firstName}!</span>
       </div>
       <StatsCards />
-
     </div>
 
   </>
