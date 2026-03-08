@@ -7,10 +7,10 @@ interface StatsCardsProps {
   isLoading: boolean;
   allTasksForToday: Task[];
   allCompletedTasksForToday: Task[];
+  currentStreak: number
 }
 
-export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForToday }: StatsCardsProps) {
-
+export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForToday, currentStreak }: StatsCardsProps) {
   return (
     <>
       <div className="flex w-full gap-4">
@@ -55,7 +55,7 @@ export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForTo
               </CardHeader>
               <CardContent>
                 <div>
-                  <span className="font-bold text-2xl">14</span>
+                  <span className="font-bold text-2xl">{currentStreak !== undefined ? currentStreak : undefined}</span>
                   <span className="text-sm text-muted-foreground"> days</span>
                 </div>
               </CardContent>
@@ -80,8 +80,8 @@ export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForTo
               </CardHeader>
               <CardContent>
                 <div>
-                  <span className="font-bold text-2xl">14</span>
-                  <span className="text-sm text-muted-foreground"> days</span>
+                  <span className="font-bold text-2xl">85</span>
+                  <span className="text-sm text-muted-foreground"> %</span>
                 </div>
               </CardContent>
             </div>
@@ -98,15 +98,15 @@ export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForTo
           ) : (
             <div className="flex flex-col">
               <CardHeader className="flex justify-between">
-                <CardDescription>Weekly Goal</CardDescription>
+                <CardDescription>Improvement</CardDescription>
                 <div className="rounded-lg p-2.5 bg-green-500/10">
                   <ChartLine color="green" className="h-5 w-5" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div>
-                  <span className="font-bold text-2xl">14</span>
-                  <span className="text-sm text-muted-foreground"> days</span>
+                  <span className="font-bold text-2xl">+12</span>
+                  <span className="text-sm text-muted-foreground"> %</span>
                 </div>
               </CardContent>
             </div>

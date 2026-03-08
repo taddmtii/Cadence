@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards }
 import { DayOfWeek, Priority, Prisma, Task } from '@prisma/client';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { TaskCompletionService } from 'src/task-completion/taskCompletion.service';
+import { UserService } from 'src/user/user.service';
 
 function toTimeDate(time: string): Date {
   if (time === "") {
@@ -12,7 +14,7 @@ function toTimeDate(time: string): Date {
 
 @Controller('task')
 export class TaskController {
-  constructor(private readonly TaskService: TaskService) { }
+  constructor(private readonly TaskService: TaskService, private readonly TaskCompletionService: TaskCompletionService, private readonly UserService: UserService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -44,15 +46,81 @@ export class TaskController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async getTaskById(@Param('id') id: string): Promise<Task | null> {
-    return this.TaskService.task({ id: id });
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllTasks(): Promise<Task[] | null> {
     return this.TaskService.tasks({})
+  }
+
+  // Counts all days from today where all tasks from user were completed.
+  @UseGuards(JwtAuthGuard)
+  @Get('currentStreakForUser/:id')
+  async getCurrentStreakForUser(@Param('id') id: string): Promise<number | null> {
+
+    const user = await this.UserService.user({ id })
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    let streak: number = 0;
+
+    // start from yesterday since today would not be completed yet.
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1)
+
+    // helper to convert date to dayofweek.
+    function getDayOfWeek(date: Date): DayOfWeek {
+      return date.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' }) as DayOfWeek
+    }
+
+    // helper to get date string for comparison (YYYY-MM-DD format)
+    const getUTCMidnight = (date: Date): Date => {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    };
+
+    while (true) {
+      if (currentDate < user!.createdAt) {
+        break
+      }
+
+      const dayOfWeek = getDayOfWeek(currentDate);
+      const checkDate = getUTCMidnight(currentDate);
+
+      // get all tasks for the specific day.
+      const scheduledTasks = await this.TaskService.tasks({
+        where: {
+          userId: id,
+          recurringDays: { has: dayOfWeek }
+        }
+      });
+
+      // if no tasks were scheduled, skip day
+      if (scheduledTasks.length === 0) {
+        currentDate.setDate(currentDate.getDate() - 1);
+        continue;
+      }
+
+      // gets all completions for specific date.
+      const completions = await this.TaskCompletionService.taskCompletions({
+        where: {
+          userId: id,
+          date: getUTCMidnight(currentDate)
+        }
+      })
+
+      // check if all scheduled tasks were completed.
+      const completedTaskIds = new Set(completions.map(c => c.taskId))
+      const allTasksCompleted = scheduledTasks.every(task =>
+        completedTaskIds.has(task.id)
+      );
+
+      if (allTasksCompleted) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+      if (streak > 365) break;
+    }
+    return streak
   }
 
   @UseGuards(JwtAuthGuard)
@@ -114,5 +182,11 @@ export class TaskController {
   @Delete(':id')
   async deleteTask(@Param('id') id: string): Promise<Task> {
     return this.TaskService.deleteTask({ id })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getTaskById(@Param('id') id: string): Promise<Task | null> {
+    return this.TaskService.task({ id: id });
   }
 }
