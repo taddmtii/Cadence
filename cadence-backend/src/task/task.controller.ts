@@ -51,6 +51,90 @@ export class TaskController {
     return this.TaskService.tasks({})
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('weeklyGoalForUser/:id')
+  async getWeeklyGoalForUser(@Param('id') id: string): Promise<number | null> {
+    const user = await this.UserService.user({ id })
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+
+    // helper to convert date to dayofweek.
+    function getDayOfWeek(date: Date): DayOfWeek {
+      return date.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' }) as DayOfWeek
+    }
+
+    // helper to get date string for comparison (YYYY-MM-DD format)
+    const getUTCMidnight = (date: Date): Date => {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    };
+
+    const getStartOfWeek = (date: Date): Date => {
+      const d = new Date(date);
+      const day = d.getUTCDay(); // 0 = Sunday, 1 = Monday, etc.
+      d.setUTCDate(d.getUTCDate() - day); // subtract the day number to get to Sunday
+      return getUTCMidnight(d);
+    };
+
+    const today = new Date();
+    const weekStart = getStartOfWeek(today)
+
+    const yesterday = new Date(today)
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1)
+
+    if (yesterday < weekStart) {
+      return null;
+    }
+
+    let totalScheduled = 0;
+    let totalCompleted = 0;
+
+    // loop from weekStart to yesterday
+    const currentDate = new Date(weekStart);
+
+    while (currentDate <= yesterday) {
+      const dayOfWeek = getDayOfWeek(currentDate);
+      const checkDate = getUTCMidnight(currentDate);
+
+      // get tasks scheduled for this day of the week
+      const scheduledTasks = await this.TaskService.tasks({
+        where: {
+          userId: id,
+          recurringDays: { has: dayOfWeek }
+        }
+      });
+
+      // get completions for this specific date
+      const completions = await this.TaskCompletionService.taskCompletions({
+        where: {
+          userId: id,
+          date: checkDate
+        }
+      });
+
+      // count scheduled tasks
+      totalScheduled += scheduledTasks.length;
+
+      // count completions that match scheduled tasks
+      const scheduledTaskIds = new Set(scheduledTasks.map(t => t.id));
+      const validCompletions = completions.filter(c => scheduledTaskIds.has(c.taskId));
+      totalCompleted += validCompletions.length;
+
+      // move onto next day
+      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    }
+
+    // avoid division by zero
+    if (totalScheduled === 0) {
+      return 100;
+    }
+
+    // return the percentage (0-100)
+    return Math.round((totalCompleted / totalScheduled) * 100);
+
+  }
+
+
   // Counts all days from today where all tasks from user were completed.
   @UseGuards(JwtAuthGuard)
   @Get('currentStreakForUser/:id')
