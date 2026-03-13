@@ -8,9 +8,10 @@ interface StatsCardsProps {
   allTasksForToday: Task[];
   allCompletedTasksForToday: Task[];
   currentStreak: number
+  weeklyGoal: number
 }
 
-export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForToday, currentStreak }: StatsCardsProps) {
+export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForToday, currentStreak, weeklyGoal }: StatsCardsProps) {
   return (
     <>
       <div className="flex w-full gap-4">
@@ -80,7 +81,7 @@ export function StatsCards({ isLoading, allTasksForToday, allCompletedTasksForTo
               </CardHeader>
               <CardContent>
                 <div>
-                  <span className="font-bold text-2xl">85</span>
+                  <span className="font-bold text-2xl">{weeklyGoal ? weeklyGoal : 100}</span>
                   <span className="text-sm text-muted-foreground"> %</span>
                 </div>
               </CardContent>

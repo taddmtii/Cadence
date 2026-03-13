@@ -10,6 +10,7 @@ export default function DashboardPage() {
   const [allTasksForToday, setAllTasksForToday] = useState<Task[]>()
   const [allCompletedTasksForToday, setAllCompletedTasksForToday] = useState<Task[]>()
   const [currentStreakForUser, setCurrentStreakForUser] = useState<number>()
+  const [weeklyGoalForUser, setWeeklyGoalForUser] = useState<number>()
   const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
@@ -32,13 +33,22 @@ export default function DashboardPage() {
       },
     })
 
+    const weeklyGoalForUser = await fetch(`http://localhost:3000/task/weeklyGoalForUser/${user?.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
+      },
+    })
+
 
     const allTasksForTodayData = await allTasksForToday.json()
     const allCompletedTasksForTodayData = await allCompletedTasksForToday.json()
     const currentStreakForUserData = await currentStreakForUser.json()
+    const weeklyGoalForUserData = await weeklyGoalForUser.json()
     setAllTasksForToday(allTasksForTodayData)
     setAllCompletedTasksForToday(allCompletedTasksForTodayData)
     setCurrentStreakForUser(currentStreakForUserData)
+    setWeeklyGoalForUser(weeklyGoalForUserData)
     setIsLoading(false)
   }
 
@@ -54,7 +64,7 @@ export default function DashboardPage() {
         <h1 className="font-bold">Dashboard</h1>
         <span className="text-muted-foreground">Welcome back, {user?.firstName}!</span>
       </div>
-      <StatsCards isLoading={isLoading} allTasksForToday={allTasksForToday} allCompletedTasksForToday={allCompletedTasksForToday} currentStreak={currentStreakForUser} />
+      <StatsCards isLoading={isLoading} allTasksForToday={allTasksForToday} allCompletedTasksForToday={allCompletedTasksForToday} currentStreak={currentStreakForUser} weeklyGoal={weeklyGoalForUser} />
     </div>
 
   </>

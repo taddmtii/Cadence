@@ -65,11 +65,11 @@ export class TaskController {
     }
 
     // helper to get date string for comparison (YYYY-MM-DD format)
-    const getUTCMidnight = (date: Date): Date => {
+    function getUTCMidnight(date: Date): Date {
       return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     };
 
-    const getStartOfWeek = (date: Date): Date => {
+    function getStartOfWeek(date: Date): Date {
       const d = new Date(date);
       const day = d.getUTCDay(); // 0 = Sunday, 1 = Monday, etc.
       d.setUTCDate(d.getUTCDate() - day); // subtract the day number to get to Sunday
